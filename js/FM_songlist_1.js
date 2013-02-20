@@ -3,7 +3,7 @@
 	"songlist":[
 		{
 			"title":"We Were Loversooooooooooooooooooooooooooo",
-			"vocal":"Jean-Jacques Burnelooooo",
+			"artist":"Jean-Jacques Burnelooooo",
 			"album":"Gankutsuou Original Soundtrackooooooooo",
 			"from":"《岩窟王》",
 			"pathmp3":"song/Gankutsuou OP_We Were Lovers.mp3",
@@ -11,7 +11,7 @@
 		},
 		{
 			"title":"ツクモノツキ",
-			"vocal":"nao",
+			"artist":"nao",
 			"album":"ツクモノツキ主題歌",
 			"from":"《ツクモノツキ》",
 			"pathmp3":"song/1 ツクモノツキ.mp3",
@@ -19,7 +19,7 @@
 		},
 		{
 			"title":"Dec. The Legendry",
-			"vocal":"Jun.A",
+			"artist":"Jun.A",
 			"album":"projectΓ 2006 DISC4",
 			"from":"C71",
 			"pathmp3":"song/Dec. The Legendry.mp3",
@@ -27,15 +27,15 @@
 		},
 		{
 			"title":"sword of virgin",
-			"vocal":"fripSide",
-			"album":"恋剣乙女 Vocal Collection",
+			"artist":"fripSide",
+			"album":"恋剣乙女 artist Collection",
 			"from":"《恋剣乙女》",
 			"pathmp3":"http://csdj.so/qq.php/kyon/16570/csdj.mp3",
 			"pathogg":" "
 		},
 		{
 			"title":"恋歌宣誓",
-			"vocal":"中恵光城",
+			"artist":"中恵光城",
 			"album":"金平糖ロマネスク",
 			"from":"M3-28",
 			"pathmp3":"song/恋歌宣誓.mp3",

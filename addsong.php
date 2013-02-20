@@ -28,7 +28,7 @@ if(isset($_GET["sl"])){
 	$json=json_decode($file,true);
 	$slength=count($json["songlist"])?count($json["songlist"]):0;
 	$json["songlist"][$slength]["title"]=$_POST["sltitle"];
-	$json["songlist"][$slength]["vocal"]=$_POST["slvocal"];
+	$json["songlist"][$slength]["artist"]=$_POST["slartist"];
 	$json["songlist"][$slength]["album"]=$_POST["slalbum"];
 	$json["songlist"][$slength]["from"]=$_POST["slfrom"];
 	$json["songlist"][$slength]["pathmp3"]=$_POST["slpmp3"];

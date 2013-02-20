@@ -21,7 +21,7 @@ td{border:1px solid #333;min-width:2em;}
 </header>
 <nav>
 <ul>
-	<li>创建歌单</li>
+	<li><a href="slmanger.php?met=create">创建歌单</a></li>
     <li>管理歌单</li>
 </ul>
 </nav>
@@ -49,8 +49,9 @@ if(file_exists($songpaperpath)){
 ?>
 </div>
 <div>
-<!--输出歌单的title，附编辑、删除功能-->
+
 <?php
+//输出歌单的title，附编辑、删除功能
 if(isset($_GET["sl"]) && !isset($_GET["met"])){
 	echo $_SERVER['HTTP_REFERER']."<br />";
 	$path=$songp["songpaper"][$_GET["sl"]]["path"];
@@ -60,7 +61,7 @@ if(isset($_GET["sl"]) && !isset($_GET["met"])){
 	echo "<table>";
 	for($i=0;$i<$slength;$i++){
 		$n=$i+1;
-		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><a href=".$n.">编辑</a></td><td><a href='javascript:void(0)' title=".$i." onclick='del(this.title);'>删除</a></td></tr>";
+		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><a href=".$n.">编辑</a></td><td><a href='javascript:void(0)' name=".$_GET["sl"]." title=".$i." onclick='del(this.name,this.title);'>删除</a></td></tr>";
 	};
 	echo"</table><br /><br />";
 };
@@ -68,14 +69,23 @@ if(isset($_GET["sl"]) && !isset($_GET["met"])){
 ?>
 
 
+
+
 </div>
+
 <?php
+
+?>
+
+
+<?php
+//动态输出添加歌曲页面
 if(isset($_GET["sl"]) && $_GET["met"]=="add"){
 echo "<div>添加歌曲：<br />";
 echo $_GET["sl"]."<br />";
 echo "<form action='addsong.php?sl=".$_GET["sl"]."' method=post>";
 echo "Title：<input name=sltitle type=text /><br />";
-echo "Vocal：<input name=slvocal type=text /><br />";
+echo "Artist：<input name=slartist type=text /><br />";
 echo "Album：<input name=slalbum type=text /><br />";
 echo "From：<input name=slfrom type=text /><br />";
 echo "Pathmp3：<input name=slpmp3 type=text /><br />";
@@ -86,8 +96,17 @@ echo "</div>";
 };
 ?>
 <?php
+//删除歌曲，并且跳转回歌曲页面
 if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="del"){
-	
+	$path=$songp["songpaper"][$_GET["sl"]]["path"];
+	$file=file_get_contents($path);
+	$json=json_decode($file,true);
+	array_splice($json["songlist"],$_GET["s"],1);
+	$json=json_encode($json);
+	$file=fopen("$path","w");
+	fwrite($file,$json);
+	fclose($file);
+	echo "<script>location.href='slmanager.php?sl=".$_GET["sl"]."';</script>";
 };
 ?>
 </article>
@@ -96,9 +115,9 @@ if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="del"){
 </footer>
 <script type="text/javascript">
 
-function del(i){
+function del(sl,i){
 	if(confirm("你确定删除这首歌吗？")){
-		var url="slmanager.php?s="+i+"&met=del";
+		var url="slmanager.php?sl="+sl+"&s="+i+"&met=del";
 		location.href=url;
 	}
 	else {};

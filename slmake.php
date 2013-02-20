@@ -28,7 +28,7 @@ $(document).ready(function(e) {
 <div id="step1">创建歌单名称<br />
 <form action="slmake.php" method="post">
 歌单名：<input name="slname" type="text" maxlength="50" value="Idlelife FM" /><br />
-文件名：FM_songlist_<input name="slalias" type="text" maxlength="50" id="slalias" value="0" onblur="formVal()" /> <span id="formval">（请使用字母、数字和下划线）</span><br />
+文件名：FM_songlist_<input name="slalias" type="text" maxlength="50" id="slalias" value="0" /> <span id="formval">（请使用字母、数字和下划线）</span><br />
 <input id="submit" type="submit" value="提交" />
 </form>
 </div>
@@ -61,33 +61,6 @@ if($_POST["slname"] && $_POST["slalias"]){
 
 ?>
 
-<div>歌单列表<br />
-<?php
-/*
-if(file_exists($songpaperpath)){
-	$songpaper=fopen("$songpaperpath","r");
-	$songpaper=json_decode($songpaper);
-	echo "<table>";
-	
-	echo"</table>";
-}else{echo "出错！";};
-
-*/
-?>
-
-</div>
-
-<div id="step2">添加歌曲<br />
-<form>
-Title：
-Vocal：
-Album：
-From：
-Genre：
-Pathmp3：
-Pathogg：
-</form>
-</div>
 
 </article>
 <footer>

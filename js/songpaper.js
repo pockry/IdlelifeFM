@@ -1,1 +1,1 @@
-{"songpaper":[{"path":"js\/FM_songlist_1.js","songlistname":"\u7efc\u5408"},{"path":"js\/FM_songlist_gsdfset.js","songlistname":"\u8fbe\u5230\u7684"},{"path":"js\/FM_songlist_fgsdfgfd.js","songlistname":"\u8272\u56fe"}]}
+{"songpaper":[{"path":"js\/FM_songlist_1.js","songlistname":"\u7efc\u5408"},{"path":"js\/FM_songlist_classic.js","songlistname":"\u53e4\u5178"},{"path":"js\/FM_songlist_ost.js","songlistname":"OST"},{"path":"js\/FM_songlist_blue.js","songlistname":"\u84dd\u8c03"}]}

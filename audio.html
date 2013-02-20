@@ -20,7 +20,7 @@ $(document).ready(function(e) {
 	var fm = document.getElementById("topic-fm");
 	function initFM(i,json){
 		$("#fm-title").text(json.songlist[i].title).show();
-		$("#fm-vocal").text(json.songlist[i].vocal).show();
+		$("#fm-artist").text(json.songlist[i].artist).show();
 		$("#fm-from").text(json.songlist[i].from).show();
 		$("#fm-album").text("<"+json.songlist[i].album+">").show();
 		$("#fm-mp3").attr("src",json.songlist[i].pathmp3);
@@ -115,7 +115,7 @@ $(document).ready(function(e) {
 }
 #sample legend{margin-left:10px;}
 
-#fm-vocal{float:left;margin:0px 6px;font-size:18px;display:inline-block;overflow:hidden;width:170px; text-overflow:ellipsis;white-space:nowrap;}
+#fm-artist{float:left;margin:0px 6px;font-size:18px;display:inline-block;overflow:hidden;width:170px; text-overflow:ellipsis;white-space:nowrap;}
 #fm-album{}
 #fm-from{color:#666;}
 #fm-title{display:block;color:#009966;margin-top:10px;margin-bottom:5px;}
@@ -216,7 +216,7 @@ $(document).ready(function(e) {
 <div class="fm-ctn">继续播放&gt;</div>
 <div id="paused">〓</div>
 
-<div id="fm-vocal">Unknown artist</div>
+<div id="fm-artist">Unknown Artist</div>
 <div style="margin:0px 6px auto 6px;overflow:hidden;width:208px; text-overflow:ellipsis;white-space:nowrap;">
 
 <span id="fm-album">&lt;Unknown Album&gt;</span><br />
