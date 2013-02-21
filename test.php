@@ -7,9 +7,12 @@
 
 <body>
 <?php
-$file=file_get_contents("js/FM_songlist_1.js");
-$json=json_decode($file,true);
-echo $json["songlistname"];
+$file="js/FM_songlist_1fse.js";
+$file=substr($file,15);
+$length=strlen($file);
+$length=$length-3;
+$file=substr($file,0,$length);
+echo $file;
 ?>
 </body>
 </html>

@@ -2,41 +2,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script></script>
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <title>Songlist Manager</title>
 <script type="text/javascript">
 $(document).ready(function(e) {
-	
+
+
 });
 </script>
 <style type="text/css">
-body{font-size:14px;color:#333;}
-table{text-align:center;}
+html{height:100%;}
+body{font-size:14px;color:#333;width:960px;margin:0 auto;box-shadow:0px 0px 6px #333;min-height:100%;padding:0;}
+header{background-color:#ddd;height:100px;}
+header h1{margin:0;padding:0.5em;}
+article{}
+table{text-align:center;padding:4px;}
 tr:hover{background-color:#eee;}
-td{border:1px solid #333;min-width:2em;}
+td{border:1px solid #333;min-width:2em;max-width:20em;word-wrap:break-word;word-break:break-all;}
+.edit td{border:none;}
+.edit input[type="text"]{width:16em;}
+
+footer{position:abusolute;width:100%;height:60px;bottom:0;background-color:#ddd;}
 </style>
 </head>
 
 <body>
 <header>
-<h1>制作你的歌单！</h1>
+<h1>Songlist Manager</h1>
+<span>For Idlelife FM, a HTML5 based web FM.</span>
 </header>
 <nav>
-<ul>
-	<li><a href="slmanager.php?met=create">创建歌单</a></li>
-    <li>管理歌单</li>
-</ul>
+
 </nav>
 <article>
 
 
-<div>歌单列表<br />
+<div>歌单列表|<a href="slmanager.php?met=create">创建歌单</a><br />
 <?php
 //输出歌单列表
 //本模块地址	slmanager.php
 //添加歌曲： 		slmanager.php?sl=0&met=add
-//批量修改mp3路径： slmanager.php?sl=0&met=mp3		todo
-//批量修改ogg路径： slmanager.php?sl=0&met=ogg		todo
+//批量修改mp3路径： slmanager.php?sl=0&met=mp3		
+//批量修改ogg路径： slmanager.php?sl=0&met=ogg		
 //编辑：			slmanager.php?sl=0
 //删除：			slmanager.php?sl=0&met=del		
 error_reporting(E_ALL & ~ E_NOTICE);
@@ -52,34 +59,36 @@ if(file_exists($songpaperpath)){
 		$file=file_get_contents($path);
 		$json=json_decode($file,true);
 		$jsonlength=count($json["songlist"])?count($json["songlist"]):0;
-		echo "<tr><td>".$n."</td><td>".$songp["songpaper"][$i]["songlistname"]."</td><td>".$jsonlength."</td><td><a href='slmanager.php?sl=".$i."&met=add'>添加歌曲</a></td><td><a href='slmanager.php?sl=".$i."&met=mp3'>修改</a></td><td>修改</td><td><a href='slmanager.php?sl=".$i."'>编辑</a></td><td><a href='javascript:void(0)' title=".$i." onclick='delsl(this.title);'>删除</a></td></tr>";
+		echo "<tr><td>".$n."</td><td>".$songp["songpaper"][$i]["songlistname"]."</td><td>".$jsonlength."</td><td><a href='slmanager.php?sl=".$i."&met=add'>添加歌曲</a></td><td><a href='slmanager.php?sl=".$i."&met=mp3'>修改</a></td><td><a href='slmanager.php?sl=".$i."&met=ogg'>修改</a></td><td><a href='slmanager.php?sl=".$i."'>编辑</a></td><td><a href='javascript:void(0)' title=".$i." onclick='delsl(this.title);'>删除</a></td></tr>";
 	};
 	echo"</table><br /><br />";
 }else{echo "出错！";};
 ?>
 </div>
-<div>
+
 <?php
 //输出歌单的title列表
 //本模块地址	slmanager.php?sl=0
-//编辑：			slmanager.php?sl=0&s=1&met=edit		todo
+//编辑：			slmanager.php?sl=0&s=1&met=edit		
 //删除：			slmanager.php?sl=0&s=1&met=del
 if(isset($_GET["sl"]) && !isset($_GET["met"])){
-	echo $_SERVER['HTTP_REFERER']."<br />";
+	//echo $_SERVER['HTTP_REFERER']."<br />";
+	echo $songp["songpaper"][$_GET["sl"]]["songlistname"]."<a href='slmanager.php?sl=".$_GET["sl"]."&met=edit'>修改名称</a><br />";
 	$path=$songp["songpaper"][$_GET["sl"]]["path"];
 	$file=file_get_contents($path);
 	$json=json_decode($file,true);
 	$slength=count($json["songlist"]);
-	echo "<table>";
+	echo "<div><table>";
+	echo "<tr style='font-weight:bold;'><td>ID</td><td>Title</td><td>Artist</td><td>Album</td><td>From</td><td>编辑</td><td>删除</td></tr>";
 	for($i=0;$i<$slength;$i++){
 		$n=$i+1;
-		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><a href=".$n.">编辑</a></td><td><a href='javascript:void(0)' name=".$_GET["sl"]." title=".$i." onclick='delsong(this.name,this.title);'>删除</a></td></tr>";
+		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td>".$json["songlist"][$i]["artist"]."</td><td>".$json["songlist"][$i]["album"]."</td><td>".$json["songlist"][$i]["from"]."</td><td><a href='slmanager.php?sl=".$_GET["sl"]."&s=".$i."&met=edit'>编辑</a></td><td><a href='javascript:void(0)' name=".$_GET["sl"]." title=".$i." onclick='delsong(this.name,this.title);'>删除</a></td></tr>";
 	};
-	echo"</table><br /><br />";
+	echo"</table></div><br /><br />";
 };
 
 ?>
-</div>
+
 
 <?php
 //创建歌单
@@ -95,38 +104,82 @@ if($_GET["met"]=="create"){
 };
 ?>
 
+<?php
+//修改歌单名称
+//本模块地址	slmanager.php?sl=0&met=edit
+//提交表单：		edit.php?sl=0&met=sl
+if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="edit"){
+	$slalias=$songp["songpaper"][$_GET["sl"]]["path"];
+	$slalias=substr($slalias,15);
+	$slaliaslength=strlen($slalias);
+	$slaliaslength=$slaliaslength-3;
+	$slalias=substr($slalias,0,$slaliaslength);
+	echo "<form action='edit.php?sl=".$_GET["sl"]."&met=sl' method='post'>";
+	echo "修改歌单名称<br />";
+	echo "你正在修改歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
+	echo "歌单名：<input name='slname' type='text' maxlength='50' value='".$songp["songpaper"][$_GET["sl"]]["songlistname"]."' /><br />";
+	echo "文件名：<span>FM_songlist_</span><input style='width:63px;' name='slalias' type='text' maxlength='50' id='slalias' value='".$slalias."' /> <span>（请使用字母、数字和下划线）</span><br />";
+	echo "<input type='submit' value='提交' />";
+	echo "</form>";
+};
+?>
+
 
 <?php
 //动态输出添加歌曲页面
 //本模块地址	slmanager.php?sl=0&met=add
 //提交表单：		addsong.php?sl=0
 if(isset($_GET["sl"]) && $_GET["met"]=="add"){
-echo "<div>添加歌曲：<br />";
-echo $_GET["sl"]."<br />";
-echo "<form action='addsong.php?sl=".$_GET["sl"]."' method=post>";
-echo "Title：<input name=sltitle type=text /><br />";
-echo "Artist：<input name=slartist type=text /><br />";
-echo "Album：<input name=slalbum type=text /><br />";
-echo "From：<input name=slfrom type=text /><br />";
-echo "Pathmp3：<input name=slpmp3 type=text /><br />";
-echo "Pathogg：<input name=slpogg type=text /><br />";
-echo "<input type=submit value='提交' />";
-echo "</form>";
-echo "</div>";
+	echo "<div>添加歌曲：<br />";
+	echo "<form action='addsong.php?sl=".$_GET["sl"]."' method=post>";
+	echo "Title：<input name=sltitle type=text /><br />";
+	echo "Artist：<input name=slartist type=text /><br />";
+	echo "Album：<input name=slalbum type=text /><br />";
+	echo "From：<input name=slfrom type=text /><br />";
+	echo "Pathmp3：<input name=slpmp3 type=text /><br />";
+	echo "Pathogg：<input name=slpogg type=text /><br />";
+	echo "<input type=submit value='提交' />";
+	echo "</form>";
+	echo "</div>";
 };
 ?>
 <?php
+//编辑歌曲页面
+//本模块地址	slmanager.php?sl=0&s=1&met=edit
+//提交表单：		edit.php?sl=0&s=1
+if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="edit"){
+	echo "<div>编辑歌曲：<br />";
+	echo "歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
+	$path=$songp["songpaper"][$_GET["sl"]]["path"];
+	$file=file_get_contents($path);
+	$json=json_decode($file,true);
+	echo "<form action='edit.php?sl=".$_GET["sl"]."&s=".$_GET["s"]."' method=post>";
+	echo "Title：<input name=sltitle type=text value='".$json["songlist"][$_GET["s"]]["title"]."' /><br />";
+	echo "Artist：<input name=slartist type=text value='".$json["songlist"][$_GET["s"]]["artist"]."' /><br />";
+	echo "Album：<input name=slalbum type=text value='".$json["songlist"][$_GET["s"]]["album"]."' /><br />";
+	echo "From：<input name=slfrom type=text value='".$json["songlist"][$_GET["s"]]["from"]."' /><br />";
+	echo "Pathmp3：<input name=slpmp3 type=text value='".$json["songlist"][$_GET["s"]]["pathmp3"]."' /><br />";
+	echo "Pathogg：<input name=slpogg type=text value='".$json["songlist"][$_GET["s"]]["pathogg"]."' /><br />";
+	echo "<input type=submit value='提交' />";
+	echo "</form>";
+	echo "</div>";
+};
+?>
+
+<?php
 //批量修改mp3路径
 //本模块地址	slmanager.php?sl=0&met=mp3
-//提交表单：	
+//提交表单：		edit.php?sl=0&met=mp3
 if(isset($_GET["sl"]) && $_GET["met"]=="mp3"){
 	echo $songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
 	$path=$songp["songpaper"][$_GET["sl"]]["path"];
 	$file=file_get_contents($path);
 	$json=json_decode($file,true);
-	$slength=count($json["songlist"]);
-	echo "<form action='' method=post>";
-	echo "<table>";
+	$slength=count($json["songlist"])?count($json["songlist"]):0;
+	if($slength==0){echo "此歌单内没有歌曲，请先行添加！";}
+	else{
+	echo "<form action='edit.php?sl=".$_GET["sl"]."&met=".$_GET["met"]."' method=post>";
+	echo "<table class='edit'>";
 	for($i=0;$i<$slength;$i++){
 		$n=$i+1;
 		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><input name='slpmp3_".$i."' type=text value='".$json["songlist"][$i]["pathmp3"]."'/></td></tr>";
@@ -134,6 +187,32 @@ if(isset($_GET["sl"]) && $_GET["met"]=="mp3"){
 	echo "</table>";
 	echo "<input type=submit value='提交' />";
 	echo "</form>";
+	};
+};
+?>
+
+<?php
+//批量修改ogg路径
+//本模块地址	slmanager.php?sl=0&met=ogg
+//提交表单：		edit.php?sl=0&met=ogg
+if(isset($_GET["sl"]) && $_GET["met"]=="ogg"){
+	echo $songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
+	$path=$songp["songpaper"][$_GET["sl"]]["path"];
+	$file=file_get_contents($path);
+	$json=json_decode($file,true);
+	$slength=count($json["songlist"])?count($json["songlist"]):0;
+	if($slength==0){echo "此歌单内没有歌曲，请先行添加！";}
+	else{
+	echo "<form action='edit.php?sl=".$_GET["sl"]."&met=".$_GET["met"]."' method=post>";
+	echo "<table class='edit'>";
+	for($i=0;$i<$slength;$i++){
+		$n=$i+1;
+		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><input name='slpogg_".$i."' type=text value='".$json["songlist"][$i]["pathogg"]."'/></td></tr>";
+	};
+	echo "</table>";
+	echo "<input type=submit value='提交' />";
+	echo "</form>";
+	};
 };
 ?>
 
@@ -171,7 +250,8 @@ if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="del"){
 ?>
 </article>
 <footer>
-<div>footer</div>
+<br />
+<div>Idlelife FM and Songlist Manager are made by pockry@idlelife.org, visit GitHub page for newest version, or visit blog page to leave a message.</div>
 </footer>
 <script type="text/javascript">
 

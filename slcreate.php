@@ -13,7 +13,7 @@ $songpaperpath="js/songpaper.js";
 if($_POST["slname"] && $_POST["slalias"]){
 	echo "歌单名：". $_POST["slname"]." 文件名：FM_songlist_". $_POST["slalias"] ."<br />";
 	$filename="js/FM_songlist_".$_POST['slalias'].".js";
-	if(file_exists($filename)){echo "歌单名重复！请返回！";}
+	if(file_exists($filename)){echo "歌单文件名重复！请返回！";}
 	else{
 	$file=fopen($filename,"x+");
 	$slname=array("songlistname"=>$_POST["slname"]);
