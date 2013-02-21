@@ -27,10 +27,11 @@ article{}
 fieldset{border:none;background-color:#f0f0f0;margin:10px;}
 legend{background-color:#d4d4d4;margin-left:20px;color:#000;}
 table{text-align:center;padding:4px;}
-tr:hover{background-color:#000;}
-tr:hover td{background-color:none;!important}
+tr:hover{background-color:#bec0c2;}
+tr:hover td{background:none;}
 td{background-color:#e6e8eb;min-width:2em;max-width:20em;word-wrap:break-word;word-break:break-all;padding:2px;}
-
+.thead{background-color:#bec0c2;font-weight:bold;}
+.thead td{background:none;}
 .edit td{border:none;text-align:left;}
 .edit input[type="text"]{}
 .righta{float:right;background-color:#9dd6c5;padding:5px;}
@@ -70,7 +71,7 @@ if(file_exists($songpaperpath)){
 	$file=file_get_contents($songpaperpath);
 	$songp=json_decode($file,true);
 	$songplength=count($songp["songpaper"]);
-	echo "<table><tr style='font-weight:bold;'><td>ID</td><td>歌单名</td><td>歌曲数</td><td>添加歌曲</td><td>批量修改mp3路径</td><td>批量修改ogg路径</td><td>编辑</td><td>删除</td></tr>";
+	echo "<table><tr class='thead'><td>ID</td><td>歌单名</td><td>歌曲数</td><td>添加歌曲</td><td>批量修改mp3路径</td><td>批量修改ogg路径</td><td>编辑</td><td>删除</td></tr>";
 	for($i=0;$i<$songplength;$i++){
 		$n=$i+1;
 		$path=$songp["songpaper"][$i]["path"];
@@ -98,7 +99,7 @@ if(isset($_GET["sl"]) && !isset($_GET["met"])){
 	$json=json_decode($file,true);
 	$slength=count($json["songlist"]);
 	echo "<table>";
-	echo "<tr style='font-weight:bold;'><td>ID</td><td>Title</td><td>Artist</td><td>Album</td><td>From</td><td>编辑</td><td>删除</td></tr>";
+	echo "<tr class='thead'><td>ID</td><td>Title</td><td>Artist</td><td>Album</td><td>From</td><td>编辑</td><td>删除</td></tr>";
 	for($i=0;$i<$slength;$i++){
 		$n=$i+1;
 		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td>".$json["songlist"][$i]["artist"]."</td><td>".$json["songlist"][$i]["album"]."</td><td>".$json["songlist"][$i]["from"]."</td><td><a href='slmanager.php?sl=".$_GET["sl"]."&s=".$i."&met=edit'>编辑</a></td><td><a href='javascript:void(0)' name=".$_GET["sl"]." title=".$i." onclick='delsong(this.name,this.title);'>删除</a></td></tr>";
