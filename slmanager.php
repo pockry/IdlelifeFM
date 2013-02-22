@@ -13,18 +13,24 @@ $(document).ready(function(e) {
 </script>
 <style type="text/css">
 html{height:100%;}
-body{font-size:14px;color:#4c4c4c;width:960px;margin:0 auto;box-shadow:0px 0px 6px #333;min-height:100%;padding:0;font-family:Roboto,"Microsoft Yahei";font-weight:300;letter-spacing:1px;}
+body{font-size:14px;color:#4c4c4c;width:960px;margin:0 auto;box-shadow:0px 0px 6px #333;min-height:100%;padding:0;font-family:Roboto,"Microsoft Yahei";font-weight:300;letter-spacing:1px;height:100%;}
 a{text-decoration:none;}
 a:link{color:#009966;}
 a:visited{color:#999;}
 a:hover{color:#ff6600;}
 a:active{}
+input[type="text"]{color:#000;font-family:Roboto,"Microsoft Yahei";font-weight:300;}
 header{background-color:#ddd;}
 header h1{margin:0;padding:0.5em;font-family:"Roboto";font-weight:100;font-size:36px;}
 .description{display:block;padding-left:100px;line-height:24px;height:24px;}
 nav{height:30px;background-color:#d4d4d4;}
+.nava{height:30px;line-height:30px;background-color:#c1b6bc;display:inline-block;padding-left:4px;padding-right:4px;border-left:5px solid #563f47;margin-left:10px;}
+.nava:link,.nava:visited,.nava:hover,.nava:active{color:#fff;}
+.nava:hover{background-color:#563f47;}
+.nava:active{background-color:#dea681;}
 article{}
-fieldset{border:none;background-color:#f0f0f0;margin:10px;}
+.popup{text-align: center;height:30px;line-height: 30px;background-color: #ddd;}
+fieldset{border:1px solid transparent;background-color:#f0f0f0;margin:10px;}
 legend{background-color:#d4d4d4;margin-left:20px;color:#000;}
 table{text-align:center;padding:4px;}
 tr:hover{background-color:#bec0c2;}
@@ -37,7 +43,7 @@ td{background-color:#e6e8eb;min-width:2em;max-width:20em;word-wrap:break-word;wo
 .righta{float:right;background-color:#9dd6c5;padding:5px;}
 .righta:link,.righta:visited,.righta:hover{color:#fff;}
 .righta:hover{background-color:#b8f1e0;}
-footer{position:abusolute;width:100%;height:60px;bottom:0;background-color:#ddd;}
+footer{position:absolute;width:960px;height:60px;bottom:0;background-color:#ddd;clear:both;}
 </style>
 </head>
 
@@ -48,7 +54,7 @@ footer{position:abusolute;width:100%;height:60px;bottom:0;background-color:#ddd;
 </header>
 <nav>
 <div>
-<a href='#' >歌单管理</a><a href='#' >使用帮助</a>
+<a class="nava" href='#' >歌单管理</a><a class="nava" href='#' >使用帮助</a>
 </div>
 </nav>
 <article>
@@ -80,11 +86,13 @@ if(file_exists($songpaperpath)){
 		$jsonlength=count($json["songlist"])?count($json["songlist"]):0;
 		echo "<tr><td>".$n."</td><td>".$songp["songpaper"][$i]["songlistname"]."</td><td>".$jsonlength."</td><td><a href='slmanager.php?sl=".$i."&met=add'>添加歌曲</a></td><td><a href='slmanager.php?sl=".$i."&met=mp3'>修改</a></td><td><a href='slmanager.php?sl=".$i."&met=ogg'>修改</a></td><td><a href='slmanager.php?sl=".$i."'>编辑</a></td><td><a href='javascript:void(0)' title=".$i." onclick='delsl(this.title);'>删除</a></td></tr>";
 	};
-	echo"</table><br /><br />";
-}else{echo "出错！";};
+	echo"</table><br />";
+}else{echo "歌单配置文件不存在！";};
 ?>
 </fieldset>
-
+<div class="popup">
+    <span>操作成功！</span>
+</div>
 <?php
 //输出歌单的title列表
 //本模块地址	slmanager.php?sl=0
@@ -104,7 +112,7 @@ if(isset($_GET["sl"]) && !isset($_GET["met"])){
 		$n=$i+1;
 		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td>".$json["songlist"][$i]["artist"]."</td><td>".$json["songlist"][$i]["album"]."</td><td>".$json["songlist"][$i]["from"]."</td><td><a href='slmanager.php?sl=".$_GET["sl"]."&s=".$i."&met=edit'>编辑</a></td><td><a href='javascript:void(0)' name=".$_GET["sl"]." title=".$i." onclick='delsong(this.name,this.title);'>删除</a></td></tr>";
 	};
-	echo "</table><br /><br />";
+	echo "</table><br />";
 	echo "</fieldset>";
 };
 
@@ -135,7 +143,7 @@ if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="edit"){
 	$slaliaslength=$slaliaslength-3;
 	$slalias=substr($slalias,0,$slaliaslength);
 
-	echo "<fieldset><legend>".$songp["songpaper"][$_GET["sl"]]["songlistname"]."：修改歌单</legend><form action='edit.php?sl=".$_GET["sl"]."&met=sl' method='post'>";
+	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 修改歌单</legend><form action='edit.php?sl=".$_GET["sl"]."&met=sl' method='post'>";
 	echo "你正在修改歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
 	echo "歌单名：<input name='slname' type='text' maxlength='50' value='".$songp["songpaper"][$_GET["sl"]]["songlistname"]."' /><br />";
 	echo "文件名：<span>FM_songlist_</span><input style='width:56px;' name='slalias' type='text' maxlength='50' id='slalias' value='".$slalias."' /> <span>（请使用字母、数字和下划线）</span><br />";
@@ -150,7 +158,7 @@ if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="edit"){
 //本模块地址	slmanager.php?sl=0&met=add
 //提交表单：		addsong.php?sl=0
 if(isset($_GET["sl"]) && $_GET["met"]=="add"){
-	echo "<fieldset><legend>".$songp["songpaper"][$_GET["sl"]]["songlistname"]."：添加歌曲</legend>";
+	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 添加歌曲</legend>";
 	echo "<form action='addsong.php?sl=".$_GET["sl"]."' method=post>";
 	echo "<table class='edit'><tr><td>Title：</td><td><input name=sltitle type=text /></td></tr>";
 	echo "<tr><td>Artist：</td><td><input name=slartist type=text /></td></tr>";
@@ -168,18 +176,17 @@ if(isset($_GET["sl"]) && $_GET["met"]=="add"){
 //本模块地址	slmanager.php?sl=0&s=1&met=edit
 //提交表单：		edit.php?sl=0&s=1
 if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="edit"){
-	echo "<fieldset><legend>编辑歌曲：</legend>";
-	echo "歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
 	$path=$songp["songpaper"][$_GET["sl"]]["path"];
 	$file=file_get_contents($path);
 	$json=json_decode($file,true);
+	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 歌曲：".$json["songlist"][$_GET["s"]]["title"]." | 编辑歌曲</legend>";
 	echo "<form action='edit.php?sl=".$_GET["sl"]."&s=".$_GET["s"]."' method=post>";
-	echo "Title：<input name=sltitle type=text value='".$json["songlist"][$_GET["s"]]["title"]."' /><br />";
-	echo "Artist：<input name=slartist type=text value='".$json["songlist"][$_GET["s"]]["artist"]."' /><br />";
-	echo "Album：<input name=slalbum type=text value='".$json["songlist"][$_GET["s"]]["album"]."' /><br />";
-	echo "From：<input name=slfrom type=text value='".$json["songlist"][$_GET["s"]]["from"]."' /><br />";
-	echo "Pathmp3：<input name=slpmp3 type=text value='".$json["songlist"][$_GET["s"]]["pathmp3"]."' /><br />";
-	echo "Pathogg：<input name=slpogg type=text value='".$json["songlist"][$_GET["s"]]["pathogg"]."' /><br />";
+	echo "<table class='edit'><tr><td>Title：</td><td><input name=sltitle type=text value='".$json["songlist"][$_GET["s"]]["title"]."' /></td></tr>";
+	echo "<tr><td>Artist：</td><td><input name=slartist type=text value='".$json["songlist"][$_GET["s"]]["artist"]."' /></td></tr>";
+	echo "<tr><td>Album：</td><td><input name=slalbum type=text value='".$json["songlist"][$_GET["s"]]["album"]."' /></td></tr>";
+	echo "<tr><td>From：</td><td><input name=slfrom type=text value='".$json["songlist"][$_GET["s"]]["from"]."' /></td></tr>";
+	echo "<tr><td>Pathmp3：</td><td><input name=slpmp3 type=text value='".$json["songlist"][$_GET["s"]]["pathmp3"]."' /></td></tr>";
+	echo "<tr><td>Pathogg：</td><td><input name=slpogg type=text value='".$json["songlist"][$_GET["s"]]["pathogg"]."' /></td></tr></table>";
 	echo "<input type=submit value='提交' />";
 	echo "</form>";
 	echo "</fieldset>";
@@ -197,7 +204,7 @@ if(isset($_GET["sl"]) && $_GET["met"]=="mp3"){
 	$slength=count($json["songlist"])?count($json["songlist"]):0;
 	if($slength==0){echo "此歌单内没有歌曲，请先行添加！";}
 	else{
-	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."|批量修改MP3路径</legend><form action='edit.php?sl=".$_GET["sl"]."&met=".$_GET["met"]."' method=post>";
+	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 批量修改MP3路径</legend><form action='edit.php?sl=".$_GET["sl"]."&met=".$_GET["met"]."' method=post>";
 	echo "<table class='edit'>";
 	for($i=0;$i<$slength;$i++){
 		$n=$i+1;
@@ -221,7 +228,7 @@ if(isset($_GET["sl"]) && $_GET["met"]=="ogg"){
 	$slength=count($json["songlist"])?count($json["songlist"]):0;
 	if($slength==0){echo "此歌单内没有歌曲，请先行添加！";}
 	else{
-	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."|批量修改OGG路径</legend><form action='edit.php?sl=".$_GET["sl"]."&met=".$_GET["met"]."' method=post>";
+	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 批量修改OGG路径</legend><form action='edit.php?sl=".$_GET["sl"]."&met=".$_GET["met"]."' method=post>";
 	echo "<table class='edit'>";
 	for($i=0;$i<$slength;$i++){
 		$n=$i+1;
@@ -247,7 +254,7 @@ if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="del"){
 	fwrite($file,$songpjson);
 	fclose($file);
 	echo "<script>location.href='slmanager.php';</script>";
-}；
+};
 ?>
 
 <?php
@@ -269,7 +276,7 @@ if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="del"){
 </article>
 <footer>
 <br />
-<div>Idlelife FM and Songlist Manager are made by pockry@idlelife.org, visit GitHub page for the newest version, or visit blog page to leave a message.</div>
+<div style="padding-bottom:1px;margin:0;">Idlelife FM and Songlist Manager are made by pockry@idlelife.org, visit GitHub page for the newest version, or visit blog page to leave a message.</div>
 </footer>
 <script type="text/javascript">
 
