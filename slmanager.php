@@ -2,59 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-<link href='http://fonts.googleapis.com/css?family=Roboto:100,300' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Roboto:100,300' rel='stylesheet' type='text/css' />
+<link href='js/style.css' rel='stylesheet' type='text/css' />
 <title>Songlist Manager</title>
-<script type="text/javascript">
-$(document).ready(function(e) {
-
-
-});
-</script>
-<style type="text/css">
-html{height:100%;}
-body{font-size:14px;color:#4c4c4c;width:960px;margin:0 auto;box-shadow:0px 0px 6px #333;min-height:100%;padding:0;font-family:Roboto,"Microsoft Yahei";font-weight:300;letter-spacing:1px;height:100%;}
-a{text-decoration:none;}
-a:link{color:#009966;}
-a:visited{color:#999;}
-a:hover{color:#ff6600;}
-a:active{}
-input[type="text"]{color:#000;font-family:Roboto,"Microsoft Yahei";font-weight:300;}
-header{background-color:#ddd;}
-header h1{margin:0;padding:0.5em;font-family:"Roboto";font-weight:100;font-size:36px;}
-.description{display:block;padding-left:100px;line-height:24px;height:24px;}
-nav{height:30px;background-color:#d4d4d4;}
-.nava{height:30px;line-height:30px;background-color:#c1b6bc;display:inline-block;padding-left:4px;padding-right:4px;border-left:5px solid #563f47;margin-left:10px;}
-.nava:link,.nava:visited,.nava:hover,.nava:active{color:#fff;}
-.nava:hover{background-color:#563f47;}
-.nava:active{background-color:#dea681;}
-article{}
-.popup{text-align: center;height:30px;line-height: 30px;background-color: #ddd;}
-fieldset{border:1px solid transparent;background-color:#f0f0f0;margin:10px;}
-legend{background-color:#d4d4d4;margin-left:20px;color:#000;}
-table{text-align:center;padding:4px;}
-tr:hover{background-color:#bec0c2;}
-tr:hover td{background:none;}
-td{background-color:#e6e8eb;min-width:2em;max-width:20em;word-wrap:break-word;word-break:break-all;padding:2px;}
-.thead{background-color:#bec0c2;font-weight:bold;}
-.thead td{background:none;}
-.edit td{border:none;text-align:left;}
-.edit input[type="text"]{}
-.righta{float:right;background-color:#9dd6c5;padding:5px;}
-.righta:link,.righta:visited,.righta:hover{color:#fff;}
-.righta:hover{background-color:#b8f1e0;}
-footer{position:absolute;width:960px;height:60px;bottom:0;background-color:#ddd;clear:both;}
-</style>
 </head>
 
 <body>
+<div class="shadowfix"><div class="heightfix">
 <header>
 <h1>Songlist Manager</h1>
 <span class="description">A backend manager for Idlelife FM. Feel easy to make yourself a DJ!</span>
 </header>
 <nav>
 <div>
-<a class="nava" href='#' >歌单管理</a><a class="nava" href='#' >使用帮助</a>
+<a class="nava" href='slmanager.php' >歌单管理</a><a class="nava" href='#' >使用帮助</a>
 </div>
 </nav>
 <article>
@@ -77,29 +38,36 @@ if(file_exists($songpaperpath)){
 	$file=file_get_contents($songpaperpath);
 	$songp=json_decode($file,true);
 	$songplength=count($songp["songpaper"]);
-	echo "<table><tr class='thead'><td>ID</td><td>歌单名</td><td>歌曲数</td><td>添加歌曲</td><td>批量修改mp3路径</td><td>批量修改ogg路径</td><td>编辑</td><td>删除</td></tr>";
+	echo "<table><tr class='thead'><td>ID</td><td>歌单名</td><td>歌曲数</td><td>是否公开</td><td>添加歌曲</td><td>批量修改mp3路径</td><td>批量修改ogg路径</td><td>编辑</td><td>删除</td></tr>";
 	for($i=0;$i<$songplength;$i++){
 		$n=$i+1;
 		$path=$songp["songpaper"][$i]["path"];
 		$file=file_get_contents($path);
 		$json=json_decode($file,true);
 		$jsonlength=count($json["songlist"])?count($json["songlist"]):0;
-		echo "<tr><td>".$n."</td><td>".$songp["songpaper"][$i]["songlistname"]."</td><td>".$jsonlength."</td><td><a href='slmanager.php?sl=".$i."&met=add'>添加歌曲</a></td><td><a href='slmanager.php?sl=".$i."&met=mp3'>修改</a></td><td><a href='slmanager.php?sl=".$i."&met=ogg'>修改</a></td><td><a href='slmanager.php?sl=".$i."'>编辑</a></td><td><a href='javascript:void(0)' title=".$i." onclick='delsl(this.title);'>删除</a></td></tr>";
+		echo "<tr><td>".$n."</td><td>".$songp["songpaper"][$i]["songlistname"]."</td><td>".$jsonlength."</td><td>".$songp["songpaper"][$i]["shareflag"]."</td><td><a href='slmanager.php?sl=".$i."&met=add'>添加</a></td><td><a href='slmanager.php?sl=".$i."&met=mp3'>修改</a></td><td><a href='slmanager.php?sl=".$i."&met=ogg'>修改</a></td><td><a href='slmanager.php?sl=".$i."'>编辑</a></td><td><a href='javascript:void(0)' title=".$i." onclick='delsl(this.title);'>删除</a></td></tr>";
 	};
 	echo"</table><br />";
 }else{echo "歌单配置文件不存在！";};
 ?>
 </fieldset>
-<div class="popup">
-    <span>操作成功！</span>
+
+<div class='popup'>
+<?php
+//echo $_SERVER['HTTP_REFERER']."<br />";
+$referer=$_SERVER['HTTP_REFERER'];
+if(strstr($referer,"slcreate.php") || strstr($referer,"addsong.php") || strstr($referer,"edit.php") || strstr($referer,"met=del")){
+echo "<span>操作成功！</span>";
+};
+?>
 </div>
+
 <?php
 //输出歌单的title列表
 //本模块地址	slmanager.php?sl=0
 //编辑：			slmanager.php?sl=0&s=1&met=edit		
 //删除：			slmanager.php?sl=0&s=1&met=del
 if(isset($_GET["sl"]) && !isset($_GET["met"])){
-	//echo $_SERVER['HTTP_REFERER']."<br />";
 	echo "<fieldset>";
 	echo "<legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."</legend>"."<a class='righta' href='slmanager.php?sl=".$_GET["sl"]."&met=edit'>修改歌单</a>";
 	$path=$songp["songpaper"][$_GET["sl"]]["path"];
@@ -125,10 +93,10 @@ if(isset($_GET["sl"]) && !isset($_GET["met"])){
 //提交表单：		slcreate.php
 if($_GET["met"]=="create"){
 	echo "<fieldset><legend>创建歌单</legend><form action='slcreate.php' method='post'>";
-	echo "<table class='edit'><tr><td>歌单名：</td><td><input name='slname' type='text' maxlength='50' /></td></tr>";
+	echo "<table class='edit'><tr><td>歌单名：</td><td><input style='width:149px;' name='slname' type='text' maxlength='50' /></td></tr>";
 	echo "<tr><td>文件名：</td><td><span>FM_songlist_</span><input style='width:56px;' name='slalias' type='text' maxlength='50' id='slalias' /> </td><td><span>（请使用字母、数字和下划线）</span></td></tr></table>";
-	echo "<input type='submit' value='提交' />";
-	echo "</form></fieldset>";
+	echo "<input type='submit' value='提    交' />";
+	echo "</form><br /></fieldset>";
 };
 ?>
 
@@ -142,13 +110,13 @@ if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="edit"){
 	$slaliaslength=strlen($slalias);
 	$slaliaslength=$slaliaslength-3;
 	$slalias=substr($slalias,0,$slaliaslength);
-
+	$share=$songp["songpaper"][$_GET["sl"]]["shareflag"] == "YES" ? "false" : "true";
 	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 修改歌单</legend><form action='edit.php?sl=".$_GET["sl"]."&met=sl' method='post'>";
-	echo "你正在修改歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]."<br />";
-	echo "歌单名：<input name='slname' type='text' maxlength='50' value='".$songp["songpaper"][$_GET["sl"]]["songlistname"]."' /><br />";
-	echo "文件名：<span>FM_songlist_</span><input style='width:56px;' name='slalias' type='text' maxlength='50' id='slalias' value='".$slalias."' /> <span>（请使用字母、数字和下划线）</span><br />";
-	echo "<input type='submit' value='提交' />";
-	echo "</form><fieldset>";
+	echo "<table class='edit'><tr><td>歌单名：</td><td><input style='width:149px;' name='slname' type='text' maxlength='50' value='".$songp["songpaper"][$_GET["sl"]]["songlistname"]."' /></td></tr>";
+	echo "<tr><td>文件名：</td><td><span>FM_songlist_</span><input style='width:56px;' name='slalias' type='text' maxlength='50' id='slalias' value='".$slalias."' /></td><td><span>（请使用字母、数字和下划线）</span></td></tr>";
+	echo "<tr><td>是否公开：</td><td><input type=radio name=share disabled=".$share." value=yes />YES<input type=radio name=share value=no checked=true />NO</td><td>（歌曲数不为0才可选择公开）</td></tr></table>";
+	echo "<input type='submit' value='提    交' />";
+	echo "</form><br /></fieldset>";
 };
 ?>
 
@@ -166,9 +134,9 @@ if(isset($_GET["sl"]) && $_GET["met"]=="add"){
 	echo "<tr><td>From：</td><td><input name=slfrom type=text /></td></tr>";
 	echo "<tr><td>Pathmp3：</td><td><input name=slpmp3 type=text /></td></tr>";
 	echo "<tr><td>Pathogg：</td><td><input name=slpogg type=text /></td></tr></table>";
-	echo "<input type=submit value='提交' />";
+	echo "<input type=submit value='提    交' />";
 	echo "</form>";
-	echo "</fieldset>";
+	echo "<br /></fieldset>";
 };
 ?>
 <?php
@@ -187,9 +155,9 @@ if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="edit"){
 	echo "<tr><td>From：</td><td><input name=slfrom type=text value='".$json["songlist"][$_GET["s"]]["from"]."' /></td></tr>";
 	echo "<tr><td>Pathmp3：</td><td><input name=slpmp3 type=text value='".$json["songlist"][$_GET["s"]]["pathmp3"]."' /></td></tr>";
 	echo "<tr><td>Pathogg：</td><td><input name=slpogg type=text value='".$json["songlist"][$_GET["s"]]["pathogg"]."' /></td></tr></table>";
-	echo "<input type=submit value='提交' />";
+	echo "<input type=submit value='提    交' />";
 	echo "</form>";
-	echo "</fieldset>";
+	echo "<br /></fieldset>";
 };
 ?>
 
@@ -211,8 +179,8 @@ if(isset($_GET["sl"]) && $_GET["met"]=="mp3"){
 		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><input name='slpmp3_".$i."' type=text value='".$json["songlist"][$i]["pathmp3"]."'/></td></tr>";
 	};
 	echo "</table>";
-	echo "<input type=submit value='提交' />";
-	echo "</form></fieldset>";
+	echo "<input type=submit value='提    交' />";
+	echo "</form><br /></fieldset>";
 	};
 };
 ?>
@@ -235,8 +203,8 @@ if(isset($_GET["sl"]) && $_GET["met"]=="ogg"){
 		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td><input name='slpogg_".$i."' type=text value='".$json["songlist"][$i]["pathogg"]."'/></td></tr>";
 	};
 	echo "</table>";
-	echo "<input type=submit value='提交' />";
-	echo "</form></fieldset>";
+	echo "<input type=submit value='提    交' />";
+	echo "</form><br /></fieldset>";
 	};
 };
 ?>
@@ -274,10 +242,12 @@ if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="del"){
 };
 ?>
 </article>
+</div>
 <footer>
-<br />
-<div style="padding-bottom:1px;margin:0;">Idlelife FM and Songlist Manager are made by pockry@idlelife.org, visit GitHub page for the newest version, or visit blog page to leave a message.</div>
+<div id="fmicon">FM</div>
+<span>Idlelife FM and Songlist Manager are open source project, created by pockry@idlelife.org. Visit <a href="#">GitHub page</a> for the newest version, or visit <a href="#">blog page</a> to leave a message.</span>
 </footer>
+</div>
 <script type="text/javascript">
 
 function delsong(sl,i){

@@ -13,8 +13,11 @@ $(document).ready(function(e) {
 		$(".fm-ctn").css({"height":fh,"line-height":fh+"px"});
 	}
 	$.ajaxSetup({async:false});
-
-	$.getJSON("js/FM_songlist_1.js",function(data){
+	$.getJSON("json.php?met=sp&callback=?",function(data){
+		sp=data;
+	});
+	alert(sp.songpaper.length);
+	$.getJSON(sp.songpaper[0].path,function(data){
 		sl=data;
 	}).error(function(){alert("error")});
 	

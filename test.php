@@ -3,16 +3,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<style type="text/css">
+html{height:100%}
+body{height:100%;width:960px;margin:0 auto;background-color:#eee;}
+</style>
 </head>
-
+<script type="text/javascript">
+$(document).ready(function(e) {
+	//var sp={};
+	$.ajaxSetup({async:false});
+	$.getJSON("json.php?met=sp&callback=?",function(data){
+	//	sp=data;
+		alert(data);
+	});
+	
+});
+</script>
 <body>
-<?php
-$file="js/FM_songlist_1fse.js";
-$file=substr($file,15);
-$length=strlen($file);
-$length=$length-3;
-$file=substr($file,0,$length);
-echo $file;
-?>
+<div></div>
+
+
+</form>
 </body>
 </html>

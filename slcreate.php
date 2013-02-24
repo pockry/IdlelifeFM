@@ -11,7 +11,6 @@
 error_reporting(E_ALL & ~ E_NOTICE);
 $songpaperpath="js/songpaper.js";
 if($_POST["slname"] && $_POST["slalias"]){
-	echo "歌单名：". $_POST["slname"]." 文件名：FM_songlist_". $_POST["slalias"] ."<br />";
 	$filename="js/FM_songlist_".$_POST['slalias'].".js";
 	if(file_exists($filename)){echo "歌单文件名重复！请返回！";}
 	else{
@@ -25,11 +24,11 @@ if($_POST["slname"] && $_POST["slalias"]){
 	$songplength=count($songp["songpaper"]);
 	$songp["songpaper"][$songplength]["path"]=$filename;
 	$songp["songpaper"][$songplength]["songlistname"]=$_POST["slname"];
+	$songp["songpaper"][$songplength]["shareflag"]="NO";
 	$json=json_encode($songp);
 	$file=fopen($songpaperpath,"w");
 	fwrite($file,$json);
 	fclose($file);
-	echo "创建歌单成功！<br />";
 	echo "<script>location.href='slmanager.php';</script>";
 	}
 };

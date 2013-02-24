@@ -53,6 +53,7 @@ if(isset($_GET["sl"])){
 				unlink($songp["songpaper"][$_GET["sl"]]["path"]); 
 				$songp["songpaper"][$_GET["sl"]]["path"]=$filename;
 				$songp["songpaper"][$_GET["sl"]]["songlistname"]=$_POST["slname"];
+				$songp["songpaper"][$_GET["sl"]]["shareflag"]=$_POST["share"];
 				$json=json_encode($songp);
 				$file=fopen($songpaperpath,"w");
 				fwrite($file,$json);
