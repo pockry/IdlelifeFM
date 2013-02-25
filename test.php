@@ -12,16 +12,19 @@ body{height:100%;width:960px;margin:0 auto;background-color:#eee;}
 <script type="text/javascript">
 $(document).ready(function(e) {
 	//var sp={};
-	$.ajaxSetup({async:false});
-	$.getJSON("json.php?met=sp&callback=?",function(data){
+	//$.ajaxSetup({async:false});
+	//$.getJSON("json.php?met=sp&callback=?",function(data){
 	//	sp=data;
-		alert(data);
-	});
+	//	alert(data.songpaper.length);
+	//});
 	
 });
 </script>
 <body>
-<div></div>
+<div>
+<input type=radio name=heh value=heh disabled=true />这是啥
+
+</div>
 
 
 </form>

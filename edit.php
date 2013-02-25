@@ -43,7 +43,14 @@ if(isset($_GET["sl"])){
 	if($_GET["met"]=="sl"){
 		if($_POST["slname"] && $_POST["slalias"]){
 			$filename="js/FM_songlist_".$_POST['slalias'].".js";
-			if(file_exists($filename)){echo "歌单文件名重复！请返回！";}
+			if($filename==$songp["songpaper"][$_GET["sl"]]["path"]){
+				$songp["songpaper"][$_GET["sl"]]["shareflag"]=$_POST["share"];
+				$json=json_encode($songp);
+				$file=fopen($songpaperpath,"w");
+				fwrite($file,$json);
+				fclose($file);
+				echo "<script>location.href='slmanager.php';</script>"; 
+			} else if(file_exists($filename)){echo "歌单文件名重复！请返回！";}
 			else {
 				$json["songlistname"]=$_POST["slname"];
 				$json=json_encode($json);
@@ -53,7 +60,7 @@ if(isset($_GET["sl"])){
 				unlink($songp["songpaper"][$_GET["sl"]]["path"]); 
 				$songp["songpaper"][$_GET["sl"]]["path"]=$filename;
 				$songp["songpaper"][$_GET["sl"]]["songlistname"]=$_POST["slname"];
-				$songp["songpaper"][$_GET["sl"]]["shareflag"]=$_POST["share"];
+				
 				$json=json_encode($songp);
 				$file=fopen($songpaperpath,"w");
 				fwrite($file,$json);

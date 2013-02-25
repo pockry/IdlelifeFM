@@ -16,10 +16,14 @@ $(document).ready(function(e) {
 	$.getJSON("json.php?met=sp&callback=?",function(data){
 		sp=data;
 	});
-	alert(sp.songpaper.length);
-	$.getJSON(sp.songpaper[0].path,function(data){
+	//alert(sp.songpaper[0].num);
+	for(s=0;s<sp.songpaper.length;s++){
+		$("<div>"+sp.songpaper[s].songlistname+"</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q");
+	};
+	var url="json.php?met=sl&s="+sp.songpaper[0].num+"&callback=?";
+	$.getJSON(url,function(data){
 		sl=data;
-	}).error(function(){alert("error")});
+	}).error(function(){alert("error1")});
 	
 	var fm = document.getElementById("topic-fm");
 	function initFM(i,json){
@@ -106,6 +110,9 @@ $(document).ready(function(e) {
 			initFM(i,sl);
 		}else{i=i+1;initFM(i,sl);}
 	});
+	$("#fm-songlist").click(function(){
+		$(".fm-songlist-p").show();
+	});
 });
 </script>
 <style type="text/css">
@@ -116,6 +123,7 @@ $(document).ready(function(e) {
 	font-family:"Microsoft Yahei";
 	padding:0;
 	color:#333;
+	position:relative;
 }
 #sample legend{margin-left:10px;}
 
@@ -190,7 +198,7 @@ $(document).ready(function(e) {
 	text-align:center;
 	cursor:pointer;
 }
-.fm-ctn{
+.fm-ctn,.fm-songlist-p{
 	display:none;
 	z-index:100;
 	position:absolute;
@@ -203,7 +211,14 @@ $(document).ready(function(e) {
 	background-color:rgba(255,255,255,0.6);
 	cursor:pointer;
 }
-
+.fm-songlist-p{
+	text-align:left;
+	line-height:1.5em;
+	cursor:default;
+}
+.fm-songlist-q{border:1px solid #999;width:auto;height:auto;line-height:1.5em;float:left;margin:3px;cursor:pointer;}
+.fm-songlist-c{color:#ff0000;}
+#fm-songlist{position:absolute;bottom:3px;left:3px;border:1px solid #999;cursor:pointer;}
 .playrow:hover{color:#0CF;}
 .clear{clear:both;}
 </style>
@@ -218,6 +233,7 @@ $(document).ready(function(e) {
 <fieldset id="sample">
 <legend>Idlelife FM</legend>
 <div class="fm-ctn">继续播放&gt;</div>
+<div class="fm-songlist-p">请选择歌单：<div class="clear"></div></div>
 <div id="paused">〓</div>
 
 <div id="fm-artist">Unknown Artist</div>
@@ -238,7 +254,7 @@ $(document).ready(function(e) {
 </div>
 <div class="clear"></div>
 
-<div>
+<div><div id="fm-songlist">歌单</div>
 	<div id="fm-next" class="playrow"><span style="font-size:14px;line-height:25px;">▶▶▎</span><br />下一首</div>
   <div id="fm-queue" class="playrow"><span style="font-size:18px;line-height:25px;">&#9850;</span><br />顺序播放</div>
   <div id="fm-loop" class="playrow"><span style="font-size:18px;line-height:25px;">&#10227;</span><br />单曲循环</div>
