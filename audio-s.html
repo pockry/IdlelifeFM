@@ -7,7 +7,7 @@
 <script type="text/javascript">
 $(document).ready(function(e) {
 	$("#volumn").hide();
-	var sp={},sl={},i=0;
+	var sp={},sl=[],i=0,n=0;
 	if(navigator.userAgent.indexOf("MSIE 9.0")>0){
 		var fh=$("#sample").height()-8;
 		$(".fm-ctn").css({"height":fh,"line-height":fh+"px"});
@@ -18,36 +18,41 @@ $(document).ready(function(e) {
 	});
 	//alert(sp.songpaper[0].num);
 	for(s=0;s<sp.songpaper.length;s++){
-		$("<div>"+sp.songpaper[s].songlistname+"</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q");
-	};
-	var url="json.php?met=sl&s="+sp.songpaper[0].num+"&callback=?";
-	$.getJSON(url,function(data){
-		sl=data;
+		var url="json.php?met=sl&s="+sp.songpaper[s].num+"&callback=?";
+		$.getJSON(url,function(data){
+		sl[s]=data;
 	}).error(function(){alert("error1")});
+	$("<div>"+sp.songpaper[s].songlistname+"<br />（"+sl[s].songlist.length+"）</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q");
+	};
+	$(".fm-songlist-q:eq(0)").addClass("fm-songlist-c");
+	$("<div>退出</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q").css("float","right");
+	
+	
 	
 	var fm = document.getElementById("topic-fm");
-	function initFM(i,json){
-		$("#fm-title").text(json.songlist[i].title).show();
-		$("#fm-artist").text(json.songlist[i].artist).show();
-		$("#fm-from").text(json.songlist[i].from).show();
-		$("#fm-album").text("<"+json.songlist[i].album+">").show();
-		$("#fm-mp3").attr("src",json.songlist[i].pathmp3);
-		$("#fm-ogg").attr("src",json.songlist[i].pathogg);
+	function initFM(i,json,n){
+		$("#fm-title").text(json[n].songlist[i].title).show();
+		$("#fm-artist").text(json[n].songlist[i].artist).show();
+		$("#fm-from").text(json[n].songlist[i].from).show();
+		$("#fm-album").text("<"+json[n].songlist[i].album+">").show();
+		$("#fm-mp3").attr("src",json[n].songlist[i].pathmp3);
+		$("#fm-ogg").attr("src",json[n].songlist[i].pathogg);
 		fm.load();
 		fm.play();
 	};
-	$("button").click(function(){initFM(0,sl);});
+	$("button").click(function(){initFM(0,sl,0);});
     setInterval(function(){
-		if(fm.duration){
-		var curt=fm.currentTime/fm.duration * 210;
-		$("#played").css("width",curt);
-		var timeleft = parseInt(fm.duration-fm.currentTime),sec=timeleft%60,sec=sec>=10?sec:"0"+sec;
+		if(fm.networkState==3){$("#timeleft").text("缓冲失败!");}
+		else if(fm.duration){
+			var curt=fm.currentTime/fm.duration * 210;
+			$("#played").css("width",curt);
+			var timeleft = parseInt(fm.duration-fm.currentTime),sec=timeleft%60,sec=sec>=10?sec:"0"+sec;
 		
-		var timeleftstr= "-"+parseInt(timeleft/60)+":"+sec;
-		$("#timeleft").text(timeleftstr);
-		} else{$("#timeleft").text("缓冲中");};
+			var timeleftstr= "-"+parseInt(timeleft/60)+":"+sec;
+			$("#timeleft").text(timeleftstr);
+		} else{$("#timeleft").text("缓冲中…");};
 		},1000);
-	initFM(i,sl);
+	initFM(i,sl,n);
 	fm.volume=0.5;
 	$("#paused").click(function(){
 		fm.pause();
@@ -91,27 +96,41 @@ $(document).ready(function(e) {
 		this.currentTime = 0;
 		if(i == sl.songlist.length-1){
 			i=0;
-			initFM(i,sl);
-		}else{i=i+1;initFM(i,sl);}
+			initFM(i,sl,n);
+		}else{i=i+1;initFM(i,sl,n);}
 	}, false);
 	
 	
 	$("#fm-loop").click(function(){
+		if(!fm.loop){
 		fm.loop=true;
 		$(this).css("color","#0cf").siblings().css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")});
-	});
-	$("#fm-queue").click(function(){
+		}else{
 		fm.loop=false;
-		$(this).css("color","#0cf").siblings().css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")});
+		$(this).css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")}).siblings().css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")});
+		};
+	});
+	$("#fm-like").click(function(){
+	
 	});
 	$("#fm-next").click(function(){
 		if(i == sl.songlist.length-1){
 			i=0;
-			initFM(i,sl);
-		}else{i=i+1;initFM(i,sl);}
+			initFM(i,sl,n);
+		}else{i=i+1;initFM(i,sl,n);}
 	});
 	$("#fm-songlist").click(function(){
 		$(".fm-songlist-p").show();
+	});
+	$(".fm-songlist-q:not(:last)").click(function(){
+		n=$(this).index();
+		alert(n);
+		i=0;
+		initFM(i,sl,n);
+		$(".fm-songlist-p").hide();
+	});
+	$(".fm-songlist-q:last").click(function(){
+		$(".fm-songlist-p").hide();
 	});
 });
 </script>
@@ -215,11 +234,12 @@ $(document).ready(function(e) {
 	text-align:left;
 	line-height:1.5em;
 	cursor:default;
+	background-color:rgba(255,255,255,0.8);
 }
-.fm-songlist-q{border:1px solid #999;width:auto;height:auto;line-height:1.5em;float:left;margin:3px;cursor:pointer;}
+.fm-songlist-q{border:1px solid #999;width:auto;height:auto;line-height:1.2em;float:left;margin:3px;cursor:pointer;padding:3px;text-align:center;}
 .fm-songlist-c{color:#ff0000;}
-#fm-songlist{position:absolute;bottom:3px;left:3px;border:1px solid #999;cursor:pointer;}
-.playrow:hover{color:#0CF;}
+#fm-songlist{position:absolute;bottom:3px;left:3px;border:1px solid #999;cursor:pointer;padding:3px;}
+.playrow:hover,#fm-songlist:hover{color:#0CF;}
 .clear{clear:both;}
 </style>
 </head>
@@ -256,7 +276,7 @@ $(document).ready(function(e) {
 
 <div><div id="fm-songlist">歌单</div>
 	<div id="fm-next" class="playrow"><span style="font-size:14px;line-height:25px;">▶▶▎</span><br />下一首</div>
-  <div id="fm-queue" class="playrow"><span style="font-size:18px;line-height:25px;">&#9850;</span><br />顺序播放</div>
+  <div id="fm-like" class="playrow"><span style="font-size:18px;line-height:25px;">&#9850;</span><br />播放喜欢</div>
   <div id="fm-loop" class="playrow"><span style="font-size:18px;line-height:25px;">&#10227;</span><br />单曲循环</div>
   
 </div>
