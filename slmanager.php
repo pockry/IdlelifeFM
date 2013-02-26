@@ -118,7 +118,11 @@ if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="edit"){
 	echo "<fieldset><legend>歌单：".$songp["songpaper"][$_GET["sl"]]["songlistname"]." | 修改歌单</legend><form action='edit.php?sl=".$_GET["sl"]."&met=sl' method='post'>";
 	echo "<table class='edit'><tr><td>歌单名：</td><td><input style='width:149px;' name='slname' type='text' maxlength='50' value='".$songp["songpaper"][$_GET["sl"]]["songlistname"]."' /></td></tr>";
 	echo "<tr><td>文件名：</td><td><span>FM_songlist_</span><input style='width:56px;' name='slalias' type='text' maxlength='50' id='slalias' value='".$slalias."' /></td><td><span>（请使用字母、数字和下划线）</span></td></tr>";
-	echo "<tr><td>是否公开：</td><td><input type=radio name=share ".$share." value=YES />YES<input type=radio name=share value=NO checked=true />NO</td><td>（歌曲数不为0才可选择公开）</td></tr></table>";
+	if($songp["songpaper"][$_GET["sl"]]["shareflag"]=="YES"){
+	echo "<tr><td>是否公开：</td><td><input type=radio name=share ".$share." value=YES checked />YES<input type=radio name=share value=NO  />NO</td><td>（歌曲数不为0才可选择公开）</td></tr></table>";
+	}else{
+	echo "<tr><td>是否公开：</td><td><input type=radio name=share ".$share." value=YES />YES<input type=radio name=share value=NO checked />NO</td><td>（歌曲数不为0才可选择公开）</td></tr></table>";
+	};
 	echo "<input type='submit' value='提    交' />";
 	echo "</form><br /></fieldset>";
 };

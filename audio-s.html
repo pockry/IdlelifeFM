@@ -8,15 +8,16 @@
 $(document).ready(function(e) {
 	$("#volumn").hide();
 	var sp={},sl=[],i=0,n=0;
-	if(navigator.userAgent.indexOf("MSIE 9.0")>0){
+	if(true){
 		var fh=$("#sample").height()-8;
 		$(".fm-ctn").css({"height":fh,"line-height":fh+"px"});
+		$(".fm-songlist-p").css({"height":fh});
 	}
 	$.ajaxSetup({async:false});
 	$.getJSON("json.php?met=sp&callback=?",function(data){
 		sp=data;
 	});
-	//alert(sp.songpaper[0].num);
+	if(sp.songpaper=="undefined"){alert("歌单载入出错！");};
 	for(s=0;s<sp.songpaper.length;s++){
 		var url="json.php?met=sl&s="+sp.songpaper[s].num+"&callback=?";
 		$.getJSON(url,function(data){
@@ -25,7 +26,12 @@ $(document).ready(function(e) {
 	$("<div>"+sp.songpaper[s].songlistname+"<br />（"+sl[s].songlist.length+"）</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q");
 	};
 	$(".fm-songlist-q:eq(0)").addClass("fm-songlist-c");
-	$("<div>退出</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q").css("float","right");
+	$("<div>退出</div>").appendTo("div.fm-songlist-p").addClass("fm-songlist-q").css({
+		"position":"absolute",
+		"bottom":"3px",
+		"right":"3px",
+		"z-index":"101",
+	});
 	
 	
 	
@@ -42,7 +48,10 @@ $(document).ready(function(e) {
 	};
 	$("button").click(function(){initFM(0,sl,0);});
     setInterval(function(){
-		if(fm.networkState==3){$("#timeleft").text("缓冲失败!");}
+		if(fm.networkState==3){
+			$("#timeleft").text("缓冲失败!");
+			$("#played").css("width",0);
+		}
 		else if(fm.duration){
 			var curt=fm.currentTime/fm.duration * 210;
 			$("#played").css("width",curt);
@@ -94,7 +103,7 @@ $(document).ready(function(e) {
 	});
 	fm.addEventListener('ended', function(){
 		this.currentTime = 0;
-		if(i == sl.songlist.length-1){
+		if(i == sl[n].songlist.length-1){
 			i=0;
 			initFM(i,sl,n);
 		}else{i=i+1;initFM(i,sl,n);}
@@ -114,7 +123,7 @@ $(document).ready(function(e) {
 	
 	});
 	$("#fm-next").click(function(){
-		if(i == sl.songlist.length-1){
+		if(i == sl[n].songlist.length-1){
 			i=0;
 			initFM(i,sl,n);
 		}else{i=i+1;initFM(i,sl,n);}
@@ -123,11 +132,11 @@ $(document).ready(function(e) {
 		$(".fm-songlist-p").show();
 	});
 	$(".fm-songlist-q:not(:last)").click(function(){
-		n=$(this).index();
-		alert(n);
+		n=$(this).index()-1;
 		i=0;
 		initFM(i,sl,n);
-		$(".fm-songlist-p").hide();
+		$(this).addClass("fm-songlist-c").siblings().removeClass("fm-songlist-c");
+		$(".fm-songlist-p").delay(300).fadeOut(300);
 	});
 	$(".fm-songlist-q:last").click(function(){
 		$(".fm-songlist-p").hide();

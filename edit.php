@@ -45,6 +45,7 @@ if(isset($_GET["sl"])){
 			$filename="js/FM_songlist_".$_POST['slalias'].".js";
 			if($filename==$songp["songpaper"][$_GET["sl"]]["path"]){
 				$songp["songpaper"][$_GET["sl"]]["shareflag"]=$_POST["share"];
+				$songp["songpaper"][$_GET["sl"]]["songlistname"]=$_POST["slname"];
 				$json=json_encode($songp);
 				$file=fopen($songpaperpath,"w");
 				fwrite($file,$json);
@@ -59,6 +60,7 @@ if(isset($_GET["sl"])){
 				fclose($file);  
 				unlink($songp["songpaper"][$_GET["sl"]]["path"]); 
 				$songp["songpaper"][$_GET["sl"]]["path"]=$filename;
+				$songp["songpaper"][$_GET["sl"]]["shareflag"]=$_POST["share"];
 				$songp["songpaper"][$_GET["sl"]]["songlistname"]=$_POST["slname"];
 				
 				$json=json_encode($songp);
