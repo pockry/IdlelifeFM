@@ -111,12 +111,12 @@ $(document).ready(function(e) {
 	
 	
 	$("#fm-loop").click(function(){
-		if(!fm.loop){
+		if(fm.loop==false){
 		fm.loop=true;
-		$(this).css("color","#0cf").siblings().css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")});
+		$(this).addClass("fm-loop-c");
 		}else{
 		fm.loop=false;
-		$(this).css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")}).siblings().css("color","#333").hover(function(){$(this).css("color","#0cf")},function(){$(this).css("color","#333")});
+		$(this).removeClass("fm-loop-c");
 		};
 	});
 	$("#fm-like").click(function(){
@@ -248,7 +248,7 @@ $(document).ready(function(e) {
 .fm-songlist-q{border:1px solid #999;width:auto;height:auto;line-height:1.2em;float:left;margin:3px;cursor:pointer;padding:3px;text-align:center;}
 .fm-songlist-c{color:#ff0000;}
 #fm-songlist{position:absolute;bottom:3px;left:3px;border:1px solid #999;cursor:pointer;padding:3px;}
-.playrow:hover,#fm-songlist:hover{color:#0CF;}
+.playrow:hover,#fm-songlist:hover,.fm-loop-c{color:#0cf;}
 .clear{clear:both;}
 </style>
 </head>
@@ -285,7 +285,7 @@ $(document).ready(function(e) {
 
 <div><div id="fm-songlist">歌单</div>
 	<div id="fm-next" class="playrow"><span style="font-size:14px;line-height:25px;">▶▶▎</span><br />下一首</div>
-  <div id="fm-like" class="playrow"><span style="font-size:18px;line-height:25px;">&#9850;</span><br />播放喜欢</div>
+  <div id="fm-like" class="playrow"><span style="line-height:25px;">(0)</span><br />播放喜欢</div>
   <div id="fm-loop" class="playrow"><span style="font-size:18px;line-height:25px;">&#10227;</span><br />单曲循环</div>
   
 </div>
