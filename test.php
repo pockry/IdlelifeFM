@@ -6,19 +6,21 @@
 <title>html5-audio</title>
 <script type="text/javascript">
 $(document).ready(function(e) {
-
+	$("input").click(function(){
+		
+	});
 });
 </script>
 <style type="text/css">
-iframe{display:none;}
+iframe{width:700px;height:300px;}
 </style>
 </head>
 
 <body>
 <div>
 eee<br />
-<iframe name='vdisk' src=''></iframe>
-<input type="button" value="try" style="width:120px;height:32px;" onclick="window.open ('http://www.vdisk.cn/api/webupload?success=http://localhost:8080/fm/test.php&user=kyonko','newwindow','height=100,width=700,top=200,left=200,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no')">
+<iframe name='vdisk' src='http://www.vdisk.cn/api/webupload?success=http://localhost:8080/fm/test.php&user=kyonko'></iframe>
+<input type="button" value="try" style="width:120px;height:32px;" onclick="window.open ('','newwindow','height=100,width=700,top=200,left=200,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no')">
 </div>
 
     <?php
@@ -33,7 +35,7 @@ eee<br />
     preg_match("/name=.httpfileurl..content=.(.*?).>/", $data, $data);
     $myurl = $data[1];
     if($myurl){
-    echo "<input type=text value='".$myurl."' />";
+    echo "<input style='width:400px;' type=text value='".$myurl."' />";
     die();
     }
     else
