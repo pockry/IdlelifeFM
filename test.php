@@ -6,42 +6,17 @@
 <title>html5-audio</title>
 <script type="text/javascript">
 $(document).ready(function(e) {
-	$("input").click(function(){
-		
-	});
-});
+var aArr = [];
+for(var i=0; i<100;i++){
+    aArr.push(i); //aArr[i] = i;
+}
+function randomSort(a,b){ //数组元素随机排列
+    return Math.random()>.5 ? -1:1;
+}
+aArr.sort(randomSort);
+ alert(aArr);
+ });
 </script>
-<style type="text/css">
-iframe{width:700px;height:300px;}
-</style>
-</head>
-
-<body>
-<div>
-eee<br />
-<iframe name='vdisk' src='http://www.vdisk.cn/api/webupload?success=http://localhost:8080/fm/test.php&user=kyonko'></iframe>
-<input type="button" value="try" style="width:120px;height:32px;" onclick="window.open ('','newwindow','height=100,width=700,top=200,left=200,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no')">
-</div>
-
-    <?php
-    error_reporting(0);
-	if(isset($_GET["downurl"])){
-    $opts = array(
-    'http'=>array('method'=>"GET",'header'=>"User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.3)\r\n")
-    );
-    $context = stream_context_create($opts);
-    $url = $_GET["downurl"];
-    $data = file_get_contents($url,false,$context);
-    preg_match("/name=.httpfileurl..content=.(.*?).>/", $data, $data);
-    $myurl = $data[1];
-    if($myurl){
-    echo "<input style='width:400px;' type=text value='".$myurl."' />";
-    die();
-    }
-    else
-    echo "参数错误";
-	};
-    ?>
-
-</body>
+ <body>
+ </body>
 </html>
