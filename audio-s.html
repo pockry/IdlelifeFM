@@ -61,7 +61,7 @@ $(document).ready(function(e) {
 			$("#timeleft").text(timeleftstr);
 		} else{$("#timeleft").text("缓冲中…");};
 		},1000);
-	initFM(i,sl,n);
+	//initFM(i,sl,n);
 	fm.volume=0.5;
 	$("#paused").click(function(){
 		fm.pause();
@@ -199,6 +199,11 @@ $(document).ready(function(e) {
 	margin:auto 1px;
 	z-index:20;
 }
+#fm-like-i,#fm-like-t{
+	float:left;
+	margin-left:3px;
+}
+
 #volbtn{font-size:18px;cursor:pointer;}
 #volumn{
 	float:right;
@@ -274,18 +279,17 @@ $(document).ready(function(e) {
 </div>
 <div id="progressbar"><div id="played"></div></div>
 <div id="timevol">
+<div id="fm-like-i">❤</div><div id="fm-like-t">喜欢</div>
     <div id="volumn"><div id="volumn-c"></div></div>
     <span id="volbtn">&#9738;</span>
 	<span id="timeleft">-0:00</span>
-
-
 
 </div>
 <div class="clear"></div>
 
 <div><div id="fm-songlist">歌单</div>
 	<div id="fm-next" class="playrow"><span style="font-size:14px;line-height:25px;">▶▶▎</span><br />下一首</div>
-  <div id="fm-like" class="playrow"><span style="line-height:25px;">(0)</span><br />播放喜欢</div>
+  <div id="fm-like" class="playrow"><span id="fm-like-n" style="line-height:25px;">(0)</span><br />播放喜欢</div>
   <div id="fm-loop" class="playrow"><span style="font-size:18px;line-height:25px;">&#10227;</span><br />单曲循环</div>
   
 </div>
