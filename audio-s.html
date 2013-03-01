@@ -12,7 +12,7 @@ $(document).ready(function(e) {
 		var fh=$("#sample").height()-8;
 		$(".fm-ctn").css({"height":fh,"line-height":fh+"px"});
 		$(".fm-songlist-p").css({"height":fh});
-	}
+	};
 	$.ajaxSetup({async:false});
 	$.getJSON("json.php?met=sp&callback=?",function(data){
 		sp=data;
