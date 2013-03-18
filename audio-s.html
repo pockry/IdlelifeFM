@@ -141,7 +141,7 @@ $(document).ready(function(e) {
 	$(".fm-songlist-q:last").click(function(){
 		$(".fm-songlist-p").hide();
 	});
-	$(".playrow").on("mouseenter",function(e){$(this).find("path").attr("fill","#00ccff");}).on("mouseout",function(e){$(this).find("path").attr("fill","#333333");});
+	$(".playrow").mouseover(function(){$(this).find("path").attr("fill","#0cf");}).mouseout(function(){$(this).find("path").attr("fill","#333");});
 });
 </script>
 <style type="text/css">

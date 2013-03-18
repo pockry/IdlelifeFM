@@ -16,8 +16,8 @@ function randomSort(a,b){ //数组元素随机排列
 aArr.sort(randomSort);
  //alert(aArr);
  
- $(".playrow").hover(function(){$(this).find("path").attr("fill","#00ccff");},function(){$(this).find("path").attr("fill","#333333");});
-
+ $(".playrow").mouseover(function(){$(this).find("path").attr("fill","#0cf");}).mouseout(function(){$(this).find("path").attr("fill","#333");});
+});
 </script>
 <style type="text/css">
 #sample{
