@@ -15,7 +15,7 @@
 </header>
 <nav>
 <div>
-<a class="nava" href='slmanager.php' >歌单管理</a><a class="nava" href='#' >使用帮助</a>
+<a class="nava" href='slmanager.php' >歌单管理</a><a class="nava" href='#' >FM配置</a><a class="nava" href='manual.html' >使用帮助</a>
 </div>
 </nav>
 <article>
