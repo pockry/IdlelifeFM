@@ -1,5 +1,4 @@
-(function($){
-$.fn.idlelifeFM = function(e){
+$(document).ready(function(e) {
 	$("#volumn").hide();
 	var sp={},sl=[],fl=[],i=0,n=0;
 	if(true){
@@ -150,4 +149,4 @@ $.fn.idlelifeFM = function(e){
 		$(this).unbind("mouseover").unbind("mouseout").find("path").attr("stroke","none").attr("fill","#f33");
 		};
 	});
-})(jQuery);
+});
