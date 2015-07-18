@@ -35,6 +35,8 @@ td{background-color:#e6e8eb;min-width:2em;max-width:18em;word-wrap:break-word;ov
 .righta{float:right;background-color:#9dd6c5;padding:5px;}
 .righta:link,.righta:visited,.righta:hover{color:#fff;}
 .righta:hover{background-color:#b8f1e0;}
+#page a{padding-left:2px;padding-right:2px;}
+#page a:hover{background-color:#bec0c2;}
 footer{position:absolute;bottom:0;width:960px;height:60px;background-color:#ddd;margin-top:-60px;overflow:hidden;clear:both;}
 #fmicon{float:left;width:54px;height:54px;border-radius:29px;border:1px solid #666;line-height:54px;text-align:center;font-size:24px;font-weight:100;margin:2px;}
 footer span{display:block;float:left;width:860px;margin:11px auto auto 14px;}

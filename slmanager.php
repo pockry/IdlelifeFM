@@ -11,7 +11,7 @@
 <div class="shadowfix"><div class="heightfix">
 <header>
 <h1>Songlist Manager</h1>
-<span class="description">A backend manager for Idlelife FM. Feel easy to make yourself a DJ!</span>
+<span class="description">A online manager for Idlelife FM. Feel easy to make yourself a DJ!</span>
 </header>
 <nav>
 <div>
@@ -57,7 +57,11 @@ if(file_exists($songpaperpath)){
 //echo $_SERVER['HTTP_REFERER']."<br />";
 $referer=$_SERVER['HTTP_REFERER'];
 if(strstr($referer,"slcreate.php") || strstr($referer,"addsong.php") || strstr($referer,"edit.php") || strstr($referer,"met=del")){
-echo "<span>操作成功！</span>";
+	$jsontimestamp='{"t":"'.date('dHis',time()).'"}';
+	$filetimestamp=fopen("js/FM_timestamp.js","w");
+	fwrite($filetimestamp,$jsontimestamp);
+	fclose($filetimestamp);
+	echo "<span>操作成功！</span>";
 };
 ?>
 </div>
@@ -65,6 +69,7 @@ echo "<span>操作成功！</span>";
 <?php
 //输出歌单的title列表
 //本模块地址	slmanager.php?sl=0
+//歌单分页地址	slmanager.php?sl=0&page=2
 //编辑：			slmanager.php?sl=0&s=1&met=edit		
 //删除：			slmanager.php?sl=0&s=1&met=del
 if(isset($_GET["sl"]) && !isset($_GET["met"])){
@@ -74,13 +79,44 @@ if(isset($_GET["sl"]) && !isset($_GET["met"])){
 	$file=file_get_contents($path);
 	$json=json_decode($file,true);
 	$slength=count($json["songlist"]);
+	$p=20;
+	
 	echo "<table>";
 	echo "<tr class='thead'><td>ID</td><td>Title</td><td>Artist</td><td>Album</td><td>From</td><td>编辑</td><td>删除</td></tr>";
-	for($i=0;$i<$slength;$i++){
+	$slengthCut=$slength%$p;
+	$pageNum=ceil($slength/$p);
+	$page = isset($_GET["page"])?$_GET["page"]:1;
+	for($i=$slength+$p-1-$page*$p;$i>=0 && $i>=$slength-$p*$page;$i--){
 		$n=$i+1;
 		echo "<tr><td>".$n."</td><td>".$json["songlist"][$i]["title"]."</td><td>".$json["songlist"][$i]["artist"]."</td><td>".$json["songlist"][$i]["album"]."</td><td>".$json["songlist"][$i]["from"]."</td><td><a href='slmanager.php?sl=".$_GET["sl"]."&s=".$i."&met=edit'>编辑</a></td><td><a href='javascript:void(0)' name=".$_GET["sl"]." title=".$i." onclick='delsong(this.name,this.title);'>删除</a></td></tr>";
 	};
 	echo "</table><br />";
+	
+	if($slength>50){
+		//上一页 页码 下一页
+		echo "<div class='popup' id='page'>";
+		if($page==2){
+			echo "<a href='slmanager.php?sl=".$_GET["sl"]."' >上一页</a>";
+		}elseif($page==1){
+			echo "<a>上一页</a>";
+		}else{
+			echo "<a href='slmanager.php?sl=".$_GET["sl"]."&page=".($page-1)."' >上一页</a>";
+		};
+		echo "<a href='slmanager.php?sl=".$_GET["sl"]."'>1</a>";
+		for($i=1;$i<$pageNum;$i++){
+			if($i==$page-1){
+			echo "<a style='background-color:#bec0c2;' href='slmanager.php?sl=".$_GET["sl"]."&page=".($i+1)."'>".($i+1)."</a>";
+			}else{
+			echo "<a href='slmanager.php?sl=".$_GET["sl"]."&page=".($i+1)."'>".($i+1)."</a>";
+			};
+		};
+		if($page==$pageNum){
+			echo "<a>下一页</a>";
+		}else{
+			echo "<a href='slmanager.php?sl=".$_GET["sl"]."&page=".($page+1)."' >下一页</a>";
+		};
+		echo "</div>";
+	};
 	echo "</fieldset>";
 };
 
@@ -228,7 +264,7 @@ if(isset($_GET["sl"]) && !isset($_GET["s"]) && $_GET["met"]=="del"){
 	$songpjson=json_encode($songp);
 	$file=fopen($songpaperpath,"w");
 	fwrite($file,$songpjson);
-	fclose($file);
+	fclose($file);	
 	echo "<script>location.href='slmanager.php';</script>";
 };
 ?>
@@ -245,7 +281,7 @@ if(isset($_GET["sl"]) && isset($_GET["s"]) && $_GET["met"]=="del"){
 	$json=json_encode($json);
 	$file=fopen("$path","w");
 	fwrite($file,$json);
-	fclose($file);
+	fclose($file);	
 	echo "<script>location.href='slmanager.php?sl=".$_GET["sl"]."';</script>";
 };
 ?>

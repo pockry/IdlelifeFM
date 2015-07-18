@@ -18,6 +18,7 @@ if(isset($_GET["sl"])){
 	$file=file_get_contents($path);
 	$json=json_decode($file,true);
 	$slength=count($json["songlist"]);
+	
 	if($_GET["met"]=="mp3"){
 	for($i=0;$i<$slength;$i++){
 		$slpmp3="slpmp3_".$i;
@@ -44,6 +45,13 @@ if(isset($_GET["sl"])){
 		if($_POST["slname"] && $_POST["slalias"]){
 			$filename="js/FM_songlist_".$_POST['slalias'].".js";
 			if($filename==$songp["songpaper"][$_GET["sl"]]["path"]){
+			
+				$json["songlistname"]=$_POST["slname"];
+				$json=json_encode($json);
+				$file=fopen($filename,"w+");
+				fwrite($file,$json);
+				fclose($file); 
+				
 				$songp["songpaper"][$_GET["sl"]]["shareflag"]=$_POST["share"];
 				$songp["songpaper"][$_GET["sl"]]["songlistname"]=$_POST["slname"];
 				$json=json_encode($songp);

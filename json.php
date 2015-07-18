@@ -1,6 +1,14 @@
 <?php
 $songpaperpath="js/songpaper.js";
-$jsondata = file_get_contents($songpaperpath);
+
+
+if(isset($_GET['callback']) && $_GET['met']=="t"){
+	$timestamp=file_get_contents("js/FM_timestamp.js");
+	echo $_GET['callback'].'('.$timestamp.')';
+};
+
+if(isset($_GET['callback']) && $_GET['met']=="sp"){
+	$jsondata = file_get_contents($songpaperpath);
 $songp = json_decode($jsondata,true);
 $songplength = count($songp["songpaper"]);
 $output=array();
@@ -14,14 +22,13 @@ for($i=0;$i<$songplength;$i++){
 };
 
 $outputjson=json_encode($output);
-
-
-if(isset($_GET['callback']) && $_GET['met']=="sp"){
-
 	echo $_GET['callback'].'('.$outputjson.')';
 };
 
 if(isset($_GET['callback']) && $_GET['met']=="sl" && isset($_GET['s'])){
+$jsondata = file_get_contents($songpaperpath);
+$songp = json_decode($jsondata,true);
+
 	$slpath=$songp["songpaper"][$_GET['s']]["path"];
 	$slfile=file_get_contents($slpath);
 	echo $_GET['callback'].'('.$slfile.')';

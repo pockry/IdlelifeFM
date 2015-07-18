@@ -1,10 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPEhtml PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="js/jquery.idlelifefm.js" type="text/javascript"></script>
-<link href='js/idlelifefm.css' rel='stylesheet' type='text/css' />
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/jquery.idlelifefm.js"></script>
+<link href='js/idlelifefm.css' rel='stylesheet' />
 <title>Idlelife FM</title>
 <script type="text/javascript">
 $(document).ready(function(e) {
@@ -14,19 +14,19 @@ $(document).ready(function(e) {
 </head>
 <body>
 
+<!--idlelife FM开始-->
+<fieldset id="sample">
+<legend>Idlelife FM</legend>
 <audio id="topic-fm">
 	<source id="fm-ogg" src="" />
 	<source id="fm-mp3" src="" />
 </audio>
-<fieldset id="sample">
-<legend>Idlelife FM</legend>
 <div class="fm-ctn">继续播放&gt;</div>
 <div class="fm-songlist-p">请选择歌单：<div class="clear"></div></div>
 <div id="paused"></div>
 
 <div id="fm-artist">Unknown Artist</div>
-<div style="margin:0px 6px auto 6px;overflow:hidden;width:208px; text-overflow:ellipsis;white-space:nowrap;">
-
+<div class="fm-panel">
 <span id="fm-album">&lt;Unknown Album&gt;</span><br />
 <span id="fm-from">Unknown</span><br />
 <span id="fm-title">Unknown Title</span>
@@ -37,20 +37,17 @@ $(document).ready(function(e) {
     <div id="volumn"><div id="volumn-c"></div></div>
     <span id="volbtn">&#9738;</span>
 	<span id="timeleft">-0:00</span>
-
 </div>
 <div class="clear"></div>
-
 <div><div id="fm-songlist">歌单</div>
 	<div id="fm-next" class="playrow">下一首</div>
-  <div id="fm-like" class="playrow"><span style="padding-top:3px;height:22px;">（<span id="fm-like-n" style="display:inline;">0</span>）</span>播放喜欢</div>
+  <div id="fm-like" class="playrow"><span class="fm-like-u">（<span id="fm-like-n">0</span>）</span>播放喜欢</div>
   <div id="fm-loop" class="playrow">单曲循环</div>
-  
 </div>
-
 </fieldset>
-<br />
-<br />
-<button value="btn">初始化</button>
+<!--idlelife FM结束-->
+
+
+
 </body>
 </html>
