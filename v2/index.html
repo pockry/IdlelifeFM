@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>Idlelife FM Demo</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="js/react-with-addons.min.js"></script>
+<script src="js/JSXTransformer.js"></script>
+<link href='style/react-ver.css' rel='stylesheet' />
+
+
+</head>
+<body>
+
+<!--idlelife FM开始-->
+<div id="idlelife-fm"></div>
+
+
+
+<script  type="text/jsx">
+var IdlelifeFM = React.createClass({
+	getInitialState: function() {
+		return {
+			data: {
+				"ogg": "",
+				"mp3": "",
+				"title": "Unknown Title",
+				"artist": "Unknown Artist",
+				"album": "Unknown Album",
+				"tag": "Unknown",
+				"timeleft": "加载中...",
+				"volume": 0.5
+			}
+		};
+	},
+  render: function() {
+    return (
+      <fieldset className="idlelifefm">
+	  		<legend>Idlelife FM</legend>
+				<IdlelifeFMAudio  data={this.state.data} />
+				<div className="fm-ctn">继续播放&gt;</div>
+				<div className="fm-songlist-p">请选择歌单：<div className="clear"></div></div>
+				<div className="paused"><svg width='28px' height='26px'><g><rect fill='#9DD6C5' width='28' height='26'/><rect x='7' y='6' fill='#FFFFFF' width='4' height='14'/><rect x='17' y='6' fill='#FFFFFF' width='4' height='14'/></g></svg></div>
+				<IdlelifeFMSongInfo  data={this.state.data} />
+				<div className="clear"></div>
+				<IdlelifeFMProgressbar  data={this.state.data} />
+				<IdlelifeFMTimeVocal  data={this.state.data} />
+				<div className="clear"></div>
+				<div>
+					<div className="fm-songlist">歌单</div>
+					<div className="playrow fm-next"><div className="svgcon"><svg width='26.134px' height='16px'><path fill='#333333' d='M22.756,0v6.4L11.377,0v6.4L0,0v16l11.377-6.4V16l11.378-6.4V16h3.378V0H22.756z'/></svg></div>下一首</div>
+				  <div className="playrow fm-like"><div className="svgcon fm-like-u">（0）</div>播放喜欢</div>
+				  <div className="playrow fm-loop"><div className="svgcon"><svg width='16px' height='16px'><path fill='#333333' d='M13.683,8c-0.006,3.556-2.546,5.677-5.683,5.683c-3.139-0.006-5.678-2.543-5.684-5.682 C2.322,4.862,4.861,2.322,8,2.317c1.268,0,2.426,0.416,3.37,1.114l-1.179,1.181l5.579,1.495l-1.496-5.579l-1.252,1.251 C11.651,0.669,9.899,0,8,0C3.581,0.002,0.001,3.583,0,8c0.002,4.42,3.581,8,8,8c4.418,0,8-3.556,8-8H13.683z'/></svg></div>单曲循环</div>
+				</div>
+	  	</fieldset>
+		);
+  }
+});
+
+var IdlelifeFMAudio = React.createClass({
+	render: function() {
+		return (
+			<audio className="topic-fm">
+				<source className="fm-ogg" src={this.props.data.ogg} />
+				<source className="fm-mp3" src={this.props.data.mp3} />
+			</audio>
+		);
+	}
+});
+
+var IdlelifeFMSongInfo = React.createClass({
+	render: function() {
+		return (
+			<div className="fm-panel">
+				<div className="fm-artist">{this.props.data.artist}</div>
+				<span className="fm-album">&lt;{this.props.data.album}&gt;</span><br />
+				<span className="fm-from">{this.props.data.tag}</span><br />
+				<span className="fm-title">{this.props.data.title}</span>
+			</div>
+		);
+	}
+});
+
+var IdlelifeFMProgressbar = React.createClass({
+	render: function() {
+		return (
+			<div className="progressbar">
+				<div className="played"></div>
+			</div>
+		);
+	}
+});
+
+var IdlelifeFMTimeVocal = React.createClass({
+	render: function() {
+		var isFirefox,isChrome,volumeVisual;
+		if( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){isFirefox=true};
+		if( navigator.userAgent.toLowerCase().indexOf('chrome') > -1 ){isChrome=true};
+		var volumePer = this.props.data.volume * 100;
+		if(isFirefox){
+			volumeVisual = {
+				backgroundImage: "-moz-linear-gradient(left, #333333, #333333 "+volumePer+"%, #eee "+volumePer+"%, #eee 100%);"
+			};
+		} else if (isChrome) {
+			volumeVisual = {
+				backgroundImage: "-webkit-linear-gradient(left, #333333, #333333 "+volumePer+"%, #eee "+volumePer+"%, #eee 100%);"
+			};
+		} else {
+			volumeVisual = {
+				backgroundImage: "linear-gradient(left, #333333, #333333 "+volumePer+"%, #eee "+volumePer+"%, #eee 100%);"
+			};
+		}
+
+		return (
+			<div className="timevol">
+				<div className="fm-like-i"><svg width='15.691px' height='14px'><path stroke='#999999' fill='none' d='M14.474,1.22c-1.691-1.693-4.542-1.611-6.335,0.18L7.846,1.692L7.553,1.399 C5.761-0.393,2.908-0.475,1.218,1.22c-1.692,1.69-1.611,4.541,0.18,6.334L7.845,14l6.447-6.446 C16.085,5.763,16.167,2.91,14.474,1.22z'/></svg></div>
+				<div className="volumn"  style={volumeVisual}></div>
+				<span className="volbtn">&#9738;</span>
+				<span className="timeleft">{this.props.data.timeleft}</span>
+			</div>
+		);
+	}
+});
+
+
+React.render(
+  <IdlelifeFM />,
+  document.getElementById('idlelife-fm')
+);
+</script>
+
+<script src="js/main.js"  type="text/jsx"></script>
+</body>
+</html>
