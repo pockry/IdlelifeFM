@@ -22,6 +22,7 @@
 <script  type="text/jsx">
 var IdlelifeFM = React.createClass({
 	getInitialState: function() {
+		//TO DO: init localStorage data
 		return {
 			data: {
 				"ogg": "",
@@ -55,8 +56,11 @@ var IdlelifeFM = React.createClass({
 			//TO DO: delete this.state.data from localStorage
 		}
 	},
-	handleVolumeClick: function() {
-
+	handleVolumeClick: function(newVolume) {
+		this.setState({
+			volume: newVolume
+		});
+		//TO DO: add volume to localStorage
 	},
   render: function() {
     return (
@@ -120,8 +124,11 @@ var IdlelifeFMTimeVocal = React.createClass({
 	handleHeartClicked: function() {
 		this.props.onHeartClick(this.refs.heartPath.getDOMNode().style.fill);
 	},
-	handleVolumeClicked: function() {
-
+	handleVolumeClicked: function(e) {
+		var event= e || window.event;
+		var clickPos=event.clientX;
+		var newVolume = (clickPos - this.refs.volume.getDOMNode().getBoundingClientRect().left)/50;
+		this.props.onVolumeClick(newVolume);
 	},
 	render: function() {
 		var isFirefox,isChrome,volumeVisual;
@@ -150,7 +157,7 @@ var IdlelifeFMTimeVocal = React.createClass({
 		return (
 			<div className="timevol">
 				<div className="fm-like-i" onClick={this.handleHeartClicked}><svg width='15.691px' height='14px'><path style={heartPathStyle} ref="heartPath" d='M14.474,1.22c-1.691-1.693-4.542-1.611-6.335,0.18L7.846,1.692L7.553,1.399 C5.761-0.393,2.908-0.475,1.218,1.22c-1.692,1.69-1.611,4.541,0.18,6.334L7.845,14l6.447-6.446 C16.085,5.763,16.167,2.91,14.474,1.22z'/></svg></div>
-				<div className="volumn"  style={volumeVisual}></div>
+				<div className="volume"  style={volumeVisual} onClick={this.handleVolumeClicked} ref="volume"></div>
 				<span className="volbtn">&#9738;</span>
 				<span className="timeleft">{this.props.timeleft}</span>
 			</div>

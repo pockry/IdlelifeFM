@@ -3,6 +3,10 @@
 
 
 /*idlelife fm*/
+
+#idlelife-fm{
+	margin-left: 200px;
+}
 .idlelifefm{
 	border:1px solid #666;
 	width:220px;
@@ -51,7 +55,7 @@
 	height:27px;
 	padding-right:5px;
 }
-.timevol:hover .volumn{
+.timevol:hover .volume{
 	width: 50px;
 }
 .timevol:hover .timeleft{
@@ -76,7 +80,7 @@
 }
 
 .volbtn{font-size:18px;cursor:pointer;}
-.volumn{
+.volume{
 	float:right;
 	height:3px;
 	width:0;
