@@ -72,7 +72,7 @@
 }
 
 .fm-like-i:hover path{
-	stroke: #f33;
+	stroke: #f33 !important;
 }
 
 .volbtn{font-size:18px;cursor:pointer;}
