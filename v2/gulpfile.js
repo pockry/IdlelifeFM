@@ -9,7 +9,7 @@ gulp.task('watch', function () {
 //使用connect启动一个Web服务器
 gulp.task('connect', function () {
   connect.server({
-    root: '/git/idlelifefm/v2',
+    root: '',
     livereload: true
   });
 });
