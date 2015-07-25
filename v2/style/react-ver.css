@@ -77,15 +77,29 @@
 	z-index:20;
 }
 
-.fm-like-i{
+.fm-heart{
 	float:left;
 	margin-left:6px;
 	margin-top:3px;
 	cursor:pointer;
 }
 
-.fm-like-i:hover path{
+.fm-heart svg path{
+	stroke: #999;
+	fill: none;
+}
+
+.fm-heart:hover svg path{
 	stroke: #f33 !important;
+}
+
+.fm-heart-active svg path{
+	stroke: transparent;
+	fill: #f33;
+}
+
+.fm-heart-active:hover svg path{
+	stroke: transparent !important;
 }
 
 .volbtn{font-size:18px;cursor:pointer;}
@@ -133,8 +147,9 @@
 .fm-songlist-q{border:1px solid #999;width:auto;height:auto;line-height:1.2em;float:left;margin:3px;cursor:pointer;padding:3px;text-align:center;}
 .fm-songlist-c{color:#ff0000;}
 .fm-songlist{position:absolute;bottom:3px;left:3px;border:1px solid #999;cursor:pointer;padding:3px;}
-.playrow:hover,.fm-songlist:hover,.fm-loop-c{color:#0cf;}
-.playrow:hover path{fill:#0cf;}
+.playrow:hover,.playrow-active,.fm-songlist:hover{color:#0cf;}
+.playrow:hover{border-color: #0cf;}
+.playrow:hover path,.playrow-active path{fill:#0cf;}
 .playrow .svgcon{display:block;height:25px;line-height: 25px;vertical-align:middle;}
 .playrow .svgcon svg{margin-top:4px;}
 .clear{clear:both;}

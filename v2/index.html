@@ -35,32 +35,35 @@ var IdlelifeFM = React.createClass({
 			timeleft: "加载中...",
 			volume: 0.5,
 			liked: 0,
-			heartStyle: {
-				"stroke":"#999",
-				"fill":"none"
-			}
+			heartClicked: false,
+			loopClicked: false,
+			likeClicked: false
 		};
 	},
-	handleHeartClick: function(fill) {
-		if (fill == "none") {
-			this.setState({
-				heartStyle : {"stroke":"#f33","fill":"#f33"},
-				liked: this.state.liked+1
-			});
-			//TO DO: add this.state.data to localStorage
-		} else {
-			this.setState({
-				heartStyle : {"stroke":"#999","fill":"none"},
-				liked: this.state.liked-1
-			});
-			//TO DO: delete this.state.data from localStorage
+	handleItemClick: function(item, argument1) {
+		switch (item) {
+			case "heart":
+				//TODO: add or delete this.state.data to localStorage
+				var newLiked = !this.state.heartClicked ? this.state.liked+1 : this.state.liked-1;
+				this.setState({
+					heartClicked: !this.state.heartClicked,
+					liked: newLiked
+				});
+				break;
+			case "volume":
+				this.setState({volume: argument1});
+				break;
+			case "loop":
+				this.setState({loopClicked: !this.state.loopClicked});
+				break;
+			case "like":
+				this.setState({likeClicked: !this.state.likeClicked});
+				break;
+			case "next":
+				break;
+			default:
+
 		}
-	},
-	handleVolumeClick: function(newVolume) {
-		this.setState({
-			volume: newVolume
-		});
-		//TO DO: add volume to localStorage
 	},
   render: function() {
     return (
@@ -73,14 +76,17 @@ var IdlelifeFM = React.createClass({
 				<IdlelifeFMSongInfo  data={this.state.data} />
 				<div className="clear"></div>
 				<IdlelifeFMProgressbar  data={this.state.data} />
-				<IdlelifeFMTimeVocal  volume={this.state.volume} timeleft={this.state.timeleft} heartStyle={this.state.heartStyle} onHeartClick={this.handleHeartClick} onVolumeClick={this.handleVolumeClick} />
+				<IdlelifeFMTimeVocal
+					volume={this.state.volume}
+					timeleft={this.state.timeleft}
+					heartClicked={this.state.heartClicked}
+					onItemClick={this.handleItemClick} />
 				<div className="clear"></div>
-				<div>
-					<div className="fm-songlist">歌单</div>
-					<div className="playrow fm-next"><div className="svgcon"><svg width='26.134px' height='16px'><path fill='#333333' d='M22.756,0v6.4L11.377,0v6.4L0,0v16l11.377-6.4V16l11.378-6.4V16h3.378V0H22.756z'/></svg></div>下一首</div>
-				  <div className="playrow fm-like"><div className="svgcon fm-like-u">（{this.state.liked}）</div>播放喜欢</div>
-				  <div className="playrow fm-loop"><div className="svgcon"><svg width='16px' height='16px'><path fill='#333333' d='M13.683,8c-0.006,3.556-2.546,5.677-5.683,5.683c-3.139-0.006-5.678-2.543-5.684-5.682 C2.322,4.862,4.861,2.322,8,2.317c1.268,0,2.426,0.416,3.37,1.114l-1.179,1.181l5.579,1.495l-1.496-5.579l-1.252,1.251 C11.651,0.669,9.899,0,8,0C3.581,0.002,0.001,3.583,0,8c0.002,4.42,3.581,8,8,8c4.418,0,8-3.556,8-8H13.683z'/></svg></div>单曲循环</div>
-				</div>
+				<IdlelifeFMControlPanel
+					liked={this.state.liked}
+					loopClicked={this.state.loopClicked}
+					likeClicked={this.state.likeClicked}
+					onItemClick={this.handleItemClick} />
 	  	</fieldset>
 		);
   }
@@ -122,13 +128,13 @@ var IdlelifeFMProgressbar = React.createClass({
 
 var IdlelifeFMTimeVocal = React.createClass({
 	handleHeartClicked: function() {
-		this.props.onHeartClick(this.refs.heartPath.getDOMNode().style.fill);
+		this.props.onItemClick("heart");
 	},
 	handleVolumeClicked: function(e) {
 		var event= e || window.event;
 		var clickPos=event.clientX;
 		var newVolume = (clickPos - this.refs.volume.getDOMNode().getBoundingClientRect().left)/50;
-		this.props.onVolumeClick(newVolume);
+		this.props.onItemClick("volume",newVolume);
 	},
 	render: function() {
 		var isFirefox,isChrome,volumeVisual;
@@ -149,17 +155,42 @@ var IdlelifeFMTimeVocal = React.createClass({
 			};
 		};
 
-		var heartPathStyle = {
-			stroke: this.props.heartStyle.stroke,
-			fill: this.props.heartStyle.fill
-		}
+		var heartToggle = this.props.heartClicked ? "fm-heart fm-heart-active" : "fm-heart";
 
 		return (
 			<div className="timevol">
-				<div className="fm-like-i" onClick={this.handleHeartClicked}><svg width='15.691px' height='14px'><path style={heartPathStyle} ref="heartPath" d='M14.474,1.22c-1.691-1.693-4.542-1.611-6.335,0.18L7.846,1.692L7.553,1.399 C5.761-0.393,2.908-0.475,1.218,1.22c-1.692,1.69-1.611,4.541,0.18,6.334L7.845,14l6.447-6.446 C16.085,5.763,16.167,2.91,14.474,1.22z'/></svg></div>
+				<div className={heartToggle} onClick={this.handleHeartClicked}><svg width='15.691px' height='14px'><path d='M14.474,1.22c-1.691-1.693-4.542-1.611-6.335,0.18L7.846,1.692L7.553,1.399 C5.761-0.393,2.908-0.475,1.218,1.22c-1.692,1.69-1.611,4.541,0.18,6.334L7.845,14l6.447-6.446 C16.085,5.763,16.167,2.91,14.474,1.22z'/></svg></div>
 				<div className="volume"  style={volumeVisual} onClick={this.handleVolumeClicked} ref="volume"></div>
 				<span className="volbtn">&#9738;</span>
 				<span className="timeleft">{this.props.timeleft}</span>
+			</div>
+		);
+	}
+});
+
+
+var IdlelifeFMControlPanel = React.createClass({
+	handleLoopClicked: function() {
+		this.props.onItemClick("loop");
+	},
+	handleLikeClicked: function() {
+		this.props.onItemClick("like");
+	},
+	handleNextClicked: function() {
+		this.props.onItemClick("next");
+	},
+	render: function() {
+		var playrowClass = "playrow",
+				loopToggle   = this.props.loopClicked ? " playrow-active" : "",
+				likeToggle   = this.props.likeClicked ? " playrow-active" : "";
+
+
+		return (
+			<div>
+				<div className="fm-songlist">歌单</div>
+				<div className={playrowClass} onClick={this.handleNextClicked} ref="next"><div className="svgcon"><svg width='26.134px' height='16px'><path fill='#333333' d='M22.756,0v6.4L11.377,0v6.4L0,0v16l11.377-6.4V16l11.378-6.4V16h3.378V0H22.756z'/></svg></div>下一首</div>
+				<div className={playrowClass+likeToggle} onClick={this.handleLikeClicked}><div className="svgcon">（{this.props.liked}）</div>播放喜欢</div>
+				<div className={playrowClass+loopToggle} onClick={this.handleLoopClicked}><div className="svgcon"><svg width='16px' height='16px'><path fill='#333333' d='M13.683,8c-0.006,3.556-2.546,5.677-5.683,5.683c-3.139-0.006-5.678-2.543-5.684-5.682 C2.322,4.862,4.861,2.322,8,2.317c1.268,0,2.426,0.416,3.37,1.114l-1.179,1.181l5.579,1.495l-1.496-5.579l-1.252,1.251 C11.651,0.669,9.899,0,8,0C3.581,0.002,0.001,3.583,0,8c0.002,4.42,3.581,8,8,8c4.418,0,8-3.556,8-8H13.683z'/></svg></div>单曲循环</div>
 			</div>
 		);
 	}
