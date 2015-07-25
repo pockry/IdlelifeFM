@@ -25,7 +25,7 @@ var IdlelifeFM = React.createClass({
 		//TO DO: init localStorage data
 		return {
 			data: {
-				"ogg": "",
+				"webm": "",
 				"mp3": "",
 				"title": "Unknown Title",
 				"artist": "Unknown Artist",
@@ -35,9 +35,12 @@ var IdlelifeFM = React.createClass({
 			timeleft: "加载中...",
 			volume: 0.5,
 			liked: 0,
+			paused: false,
 			heartClicked: false,
 			loopClicked: false,
-			likeClicked: false
+			likeClicked: false,
+			listShow: false
+
 		};
 	},
 	handleItemClick: function(item, argument1) {
@@ -61,18 +64,61 @@ var IdlelifeFM = React.createClass({
 				break;
 			case "next":
 				break;
+			case "paused":
+				this.setState({
+					paused: true
+				});
+				break;
+			case "continue":
+				this.setState({
+					paused: false
+				});
+			 	break;
+			case "songlist":
+				this.setState({
+					listShow: true
+				});
+				break;
+			case "songlist-quit":
+				this.setState({
+					listShow: false
+				})
+				break;
 			default:
 
 		}
 	},
+	componentDidMount: function() {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE ) {
+           if(xhr.status == 200){
+               // get xhr.responseText;
+           }
+           else if(xhr.status == 400) {
+              console.error('There was an error 400')
+           }
+           else {
+               console.error('something else other than 200 was returned')
+           }
+        }
+    }
+		xhr.open("GET", this.props.url, true);
+		xhr.send();
+  },
   render: function() {
+		var fmContinueClass = this.state.paused ? " p-active" : "";
+		var fmSonglistClass = this.state.listShow ? " p-active" : "";
     return (
       <fieldset className="idlelifefm">
 	  		<legend>Idlelife FM</legend>
 				<IdlelifeFMAudio  data={this.state.data} />
-				<div className="fm-ctn">继续播放&gt;</div>
-				<div className="fm-songlist-p">请选择歌单：<div className="clear"></div></div>
-				<div className="paused"><svg width='28px' height='26px'><g><rect fill='#9DD6C5' width='28' height='26'/><rect x='7' y='6' fill='#FFFFFF' width='4' height='14'/><rect x='17' y='6' fill='#FFFFFF' width='4' height='14'/></g></svg></div>
+				<div className={"fm-ctn"+fmContinueClass} onClick={this.handleItemClick.bind(null,"continue")}>继续播放&gt;</div>
+				<div className={"fm-songlist-p"+fmSonglistClass}>请选择歌单：
+					<div className="fm-songlist-q" onClick={this.handleItemClick.bind(null,"songlist-quit")}>返回</div>
+					<div className="clear"></div>
+				</div>
+				<div className="paused" onClick={this.handleItemClick.bind(null,"paused")}><svg width='28px' height='26px'><g><rect fill='#9DD6C5' width='28' height='26'/><rect x='7' y='6' fill='#FFFFFF' width='4' height='14'/><rect x='17' y='6' fill='#FFFFFF' width='4' height='14'/></g></svg></div>
 				<IdlelifeFMSongInfo  data={this.state.data} />
 				<div className="clear"></div>
 				<IdlelifeFMProgressbar  data={this.state.data} />
@@ -96,7 +142,7 @@ var IdlelifeFMAudio = React.createClass({
 	render: function() {
 		return (
 			<audio className="topic-fm">
-				<source className="fm-ogg" src={this.props.data.ogg} />
+				<source className="fm-ogg" src={this.props.data.webm} />
 				<source className="fm-mp3" src={this.props.data.mp3} />
 			</audio>
 		);
@@ -179,6 +225,9 @@ var IdlelifeFMControlPanel = React.createClass({
 	handleNextClicked: function() {
 		this.props.onItemClick("next");
 	},
+	handleSonglistClicked: function() {
+		this.props.onItemClick("songlist");
+	},
 	render: function() {
 		var playrowClass = "playrow",
 				loopToggle   = this.props.loopClicked ? " playrow-active" : "",
@@ -187,7 +236,7 @@ var IdlelifeFMControlPanel = React.createClass({
 
 		return (
 			<div>
-				<div className="fm-songlist">歌单</div>
+				<div className="fm-songlist" onClick={this.handleSonglistClicked}>歌单</div>
 				<div className={playrowClass} onClick={this.handleNextClicked} ref="next"><div className="svgcon"><svg width='26.134px' height='16px'><path fill='#333333' d='M22.756,0v6.4L11.377,0v6.4L0,0v16l11.377-6.4V16l11.378-6.4V16h3.378V0H22.756z'/></svg></div>下一首</div>
 				<div className={playrowClass+likeToggle} onClick={this.handleLikeClicked}><div className="svgcon">（{this.props.liked}）</div>播放喜欢</div>
 				<div className={playrowClass+loopToggle} onClick={this.handleLoopClicked}><div className="svgcon"><svg width='16px' height='16px'><path fill='#333333' d='M13.683,8c-0.006,3.556-2.546,5.677-5.683,5.683c-3.139-0.006-5.678-2.543-5.684-5.682 C2.322,4.862,4.861,2.322,8,2.317c1.268,0,2.426,0.416,3.37,1.114l-1.179,1.181l5.579,1.495l-1.496-5.579l-1.252,1.251 C11.651,0.669,9.899,0,8,0C3.581,0.002,0.001,3.583,0,8c0.002,4.42,3.581,8,8,8c4.418,0,8-3.556,8-8H13.683z'/></svg></div>单曲循环</div>
@@ -198,7 +247,7 @@ var IdlelifeFMControlPanel = React.createClass({
 
 
 React.render(
-  <IdlelifeFM />,
+  <IdlelifeFM url="js/FM_songlist_test.js" />,
   document.getElementById('idlelife-fm')
 );
 </script>
