@@ -10,6 +10,7 @@
 .idlelifefm{
 	border:1px solid #666;
 	width:220px;
+	height: 191px;
 	font-size:12px;
 	font-family:"Microsoft Yahei";
 	padding:0;
@@ -18,7 +19,7 @@
 }
 .idlelifefm legend{margin-left:10px;}
 
-.fm-panel{float: left;margin:0px 6px auto 6px;overflow:hidden;width:208px; text-overflow:ellipsis;white-space:nowrap;}
+.fm-panel{float: left;margin:0px 6px auto 6px;overflow:hidden;width:208px;height:90px ;text-overflow:ellipsis;white-space:nowrap;}
 .fm-artist{font-size:18px;overflow:hidden;width:170px; text-overflow:ellipsis;white-space:nowrap;}
 .fm-album{}
 .fm-from{color:#666;}
@@ -39,19 +40,13 @@
 .paused{
 	position: absolute;
 	display:inline-block;
-	top: 6px;
+	top: 8px;
 	right: 10px;
 	cursor:pointer;
 }
 
 @-moz-document url-prefix() {
-  .paused {
-		position: absolute;
-		display:inline-block;
-		top: -8px;
-		right: 10px;
-		cursor:pointer;
-  }
+  .paused {top: -8px;}
 }
 
 .paused:hover rect:first-child{
@@ -119,6 +114,7 @@
 	float:right;
 	margin:0 3px 3px;
 	padding:3px;
+	height: 42px;
 	border:1px solid #999;
 	text-align:center;
 	cursor:pointer;
@@ -130,10 +126,10 @@
 	position:absolute;
 	text-align:center;
 	width:inherit;
-	height:184px;
-	line-height:184px;
+	height:183px;
+	line-height:182px;
 	vertical-align:middle;
-	margin-top:-8px;
+	margin-top:-6px;
 	background-color:rgba(255,255,255,0.6);
 	cursor:pointer;
 	bottom:0;
@@ -156,7 +152,6 @@
 .fm-songlist-c{color:#ff0000;}
 .fm-songlist{position:absolute;bottom:3px;left:3px;border:1px solid #999;cursor:pointer;padding:3px;}
 .playrow:hover,.playrow-active,.fm-songlist:hover{color:#0cf;}
-.playrow:hover{border-color: #0cf;}
 .playrow:hover path,.playrow-active path{fill:#0cf;}
 .playrow .svgcon{display:block;height:25px;line-height: 25px;vertical-align:middle;}
 .playrow .svgcon svg{margin-top:4px;}

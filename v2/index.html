@@ -16,32 +16,62 @@
 
 <!--idlelife FM开始-->
 <div id="idlelife-fm"></div>
+<!--idlelife FM结束-->
 
+
+<div class="">
+	<button type="button" name="button" onclick=(window.localStorage.clear())>clear localStorage</button>
+</div>
 
 
 <script  type="text/jsx">
 var IdlelifeFM = React.createClass({
 	getInitialState: function() {
-		//TO DO: init localStorage data
 		return {
 			data: {
-				"webm": "",
-				"mp3": "",
 				"title": "Unknown Title",
 				"artist": "Unknown Artist",
 				"album": "Unknown Album",
 				"tag": "Unknown",
+				"mp3": "",
+				"ogg": "",
+				"songID": ""
 			},
-			timeleft: "加载中...",
+			timeleft: "初始化中…",
 			volume: 0.5,
 			liked: 0,
+			likedSong:[],
 			paused: false,
 			heartClicked: false,
 			loopClicked: false,
 			likeClicked: false,
 			listShow: false
-
 		};
+	},
+	getSongData: function(url) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == XMLHttpRequest.DONE ) {
+				if(xhr.status == 200){
+					this.setState({ data: JSON.parse(xhr.responseText) }, function() {
+						var fm = this.refs.fm.getDOMNode();
+						fm.load();
+						if(fm.networkState==3) {
+							this.setState({timeleft: "加载失败…"});
+						}
+						fm.play(); 	// for firefox
+					}.bind(this));
+				}
+				else if(xhr.status == 400) {
+					console.error('There was an error 400')
+				}
+			 	else {
+					console.error('something else other than 200 was returned')
+				}
+			}
+		}.bind(this);
+		xhr.open("GET", url, true);
+		xhr.send();
 	},
 	handleItemClick: function(item, argument1) {
 		switch (item) {
@@ -63,56 +93,80 @@ var IdlelifeFM = React.createClass({
 				this.setState({likeClicked: !this.state.likeClicked});
 				break;
 			case "next":
+				this.getSongData(this.props.url);
 				break;
 			case "paused":
-				this.setState({
-					paused: true
-				});
+				this.setState({paused: true});
 				break;
 			case "continue":
-				this.setState({
-					paused: false
-				});
+				this.setState({paused: false});
 			 	break;
 			case "songlist":
-				this.setState({
-					listShow: true
-				});
+				this.setState({listShow: true});
 				break;
 			case "songlist-quit":
-				this.setState({
-					listShow: false
-				})
+				this.setState({listShow: false});
 				break;
 			default:
 
 		}
 	},
 	componentDidMount: function() {
-		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function() {
-        if (xhr.readyState == XMLHttpRequest.DONE ) {
-           if(xhr.status == 200){
-               // get xhr.responseText;
-           }
-           else if(xhr.status == 400) {
-              console.error('There was an error 400')
-           }
-           else {
-               console.error('something else other than 200 was returned')
-           }
-        }
-    }
-		xhr.open("GET", this.props.url, true);
-		xhr.send();
-  },
+		//TODO: init localStorage data, get audio volume
+		//			set audio, getSongData
+		var fmStore = {},
+				store		= window.localStorage,
+				fm = this.refs.fm.getDOMNode();
+				fm.volume = this.state.volume;
+		if(typeof store.idlelifefmVolume === "undefined") {
+			store.idlelifefmVolume = this.state.volume;
+			store.idlelifefmLike = this.state.liked;
+			store.idlelifefmLikedSong = [];
+		} else if(store.idlelifefmVolume) {
+			this.setState({
+				volume: store.idlelifefmVolume,
+				liked: store.idlelifefmLike
+			});
+		}
+		fm.addEventListener('ended', function() {
+			// loop is on: repeat
+			// loop is off:
+			//		like is off: request the api for another song;
+			// 		like is on: load from localStorage data
+		}, false);
+		fm.addEventListener('timeupdate', function() {
+			if(!isNaN(fm.duration)) {
+				var timeleft = fm.duration - fm.currentTime;
+				var timeleftSec = parseInt(timeleft % 60);
+				timeleftSec = timeleftSec >= 10 ? timeleftSec : "0" + timeleftSec;
+				var timeleftString = "-" + parseInt(timeleft / 60) + ':' + timeleftSec;
+				this.setState({timeleft: timeleftString});
+			}
+			else {
+				this.setState({timeleft: "加载中…"});
+			}
+		}.bind(this), false);
+	},
+	componentDidUpdate: function(prevProps, prevState) {
+		var fm = this.refs.fm.getDOMNode();
+		if(prevState.paused !== this.state.paused) {
+			fm.paused ? fm.pause() : fm.play();
+		};
+		if(prevState.volume !== this.state.volume) {
+			window.localStorage.setItem("idlelifefmVolume", this.state.volume);
+			fm.volume = this.state.volume;
+		}
+		if(prevState.liked !== this.state.liked) {
+			window.localStorage.setItem("idlelifefmLike", this.state.liked);
+		}
+	},
   render: function() {
 		var fmContinueClass = this.state.paused ? " p-active" : "";
 		var fmSonglistClass = this.state.listShow ? " p-active" : "";
     return (
       <fieldset className="idlelifefm">
 	  		<legend>Idlelife FM</legend>
-				<IdlelifeFMAudio  data={this.state.data} />
+				<IdlelifeFMAudio  data={this.state.data} ref="fm" />
 				<div className={"fm-ctn"+fmContinueClass} onClick={this.handleItemClick.bind(null,"continue")}>继续播放&gt;</div>
 				<div className={"fm-songlist-p"+fmSonglistClass}>请选择歌单：
 					<div className="fm-songlist-q" onClick={this.handleItemClick.bind(null,"songlist-quit")}>返回</div>
@@ -142,7 +196,7 @@ var IdlelifeFMAudio = React.createClass({
 	render: function() {
 		return (
 			<audio className="topic-fm">
-				<source className="fm-ogg" src={this.props.data.webm} />
+				<source className="fm-ogg" src={this.props.data.ogg} />
 				<source className="fm-mp3" src={this.props.data.mp3} />
 			</audio>
 		);
@@ -216,30 +270,17 @@ var IdlelifeFMTimeVocal = React.createClass({
 
 
 var IdlelifeFMControlPanel = React.createClass({
-	handleLoopClicked: function() {
-		this.props.onItemClick("loop");
-	},
-	handleLikeClicked: function() {
-		this.props.onItemClick("like");
-	},
-	handleNextClicked: function() {
-		this.props.onItemClick("next");
-	},
-	handleSonglistClicked: function() {
-		this.props.onItemClick("songlist");
+	handleItemClicked: function(item) {
+		this.props.onItemClick(item);
 	},
 	render: function() {
-		var playrowClass = "playrow",
-				loopToggle   = this.props.loopClicked ? " playrow-active" : "",
-				likeToggle   = this.props.likeClicked ? " playrow-active" : "";
-
 
 		return (
 			<div>
-				<div className="fm-songlist" onClick={this.handleSonglistClicked}>歌单</div>
-				<div className={playrowClass} onClick={this.handleNextClicked} ref="next"><div className="svgcon"><svg width='26.134px' height='16px'><path fill='#333333' d='M22.756,0v6.4L11.377,0v6.4L0,0v16l11.377-6.4V16l11.378-6.4V16h3.378V0H22.756z'/></svg></div>下一首</div>
-				<div className={playrowClass+likeToggle} onClick={this.handleLikeClicked}><div className="svgcon">（{this.props.liked}）</div>播放喜欢</div>
-				<div className={playrowClass+loopToggle} onClick={this.handleLoopClicked}><div className="svgcon"><svg width='16px' height='16px'><path fill='#333333' d='M13.683,8c-0.006,3.556-2.546,5.677-5.683,5.683c-3.139-0.006-5.678-2.543-5.684-5.682 C2.322,4.862,4.861,2.322,8,2.317c1.268,0,2.426,0.416,3.37,1.114l-1.179,1.181l5.579,1.495l-1.496-5.579l-1.252,1.251 C11.651,0.669,9.899,0,8,0C3.581,0.002,0.001,3.583,0,8c0.002,4.42,3.581,8,8,8c4.418,0,8-3.556,8-8H13.683z'/></svg></div>单曲循环</div>
+				<div className="fm-songlist" onClick={this.handleItemClicked.bind(null,"songlist")}>歌单</div>
+				<div className="playrow" onClick={this.handleItemClicked.bind(null,"next")}><div className="svgcon"><svg width='26.134px' height='16px'><path fill='#333333' d='M22.756,0v6.4L11.377,0v6.4L0,0v16l11.377-6.4V16l11.378-6.4V16h3.378V0H22.756z'/></svg></div>下一首</div>
+				<div className={"playrow"+(this.props.likeClicked ? " playrow-active" : "")} onClick={this.handleItemClicked.bind(null,"like")}><div className="svgcon">（{this.props.liked}）</div>播放喜欢</div>
+				<div className={"playrow"+ (this.props.loopClicked ? " playrow-active" : "")} onClick={this.handleItemClicked.bind(null,"loop")}><div className="svgcon"><svg width='16px' height='16px'><path fill='#333333' d='M13.683,8c-0.006,3.556-2.546,5.677-5.683,5.683c-3.139-0.006-5.678-2.543-5.684-5.682 C2.322,4.862,4.861,2.322,8,2.317c1.268,0,2.426,0.416,3.37,1.114l-1.179,1.181l5.579,1.495l-1.496-5.579l-1.252,1.251 C11.651,0.669,9.899,0,8,0C3.581,0.002,0.001,3.583,0,8c0.002,4.42,3.581,8,8,8c4.418,0,8-3.556,8-8H13.683z'/></svg></div>单曲循环</div>
 			</div>
 		);
 	}
@@ -250,6 +291,7 @@ React.render(
   <IdlelifeFM url="js/FM_songlist_test.js" />,
   document.getElementById('idlelife-fm')
 );
+
 </script>
 
 <script src="js/main.js"  type="text/jsx"></script>
