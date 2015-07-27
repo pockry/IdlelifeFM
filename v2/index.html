@@ -40,7 +40,6 @@ var IdlelifeFM = React.createClass({
 			timeleft: "初始化中…",
 			volume: 0.5,
 			liked: 0,
-			likedSong:[],
 			paused: false,
 			heartClicked: false,
 			loopClicked: false,
@@ -53,7 +52,10 @@ var IdlelifeFM = React.createClass({
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == XMLHttpRequest.DONE ) {
 				if(xhr.status == 200){
-					this.setState({ data: JSON.parse(xhr.responseText) }, function() {
+					this.setState({
+						data: JSON.parse(xhr.responseText),
+						heartClicked:false
+					}, function() {
 						var fm = this.refs.fm.getDOMNode();
 						fm.load();
 						if(fm.networkState==3) {
@@ -76,7 +78,6 @@ var IdlelifeFM = React.createClass({
 	handleItemClick: function(item, argument1) {
 		switch (item) {
 			case "heart":
-				//TODO: add or delete this.state.data to localStorage
 				var newLiked = !this.state.heartClicked ? this.state.liked+1 : this.state.liked-1;
 				this.setState({
 					heartClicked: !this.state.heartClicked,
@@ -93,7 +94,8 @@ var IdlelifeFM = React.createClass({
 				this.setState({likeClicked: !this.state.likeClicked});
 				break;
 			case "next":
-				this.getSongData(this.props.url);
+				// TODO: when like is on: get the next liked songID from localStorage, request the api for song
+				this.getSongData(this.props.url2);
 				break;
 			case "paused":
 				this.setState({paused: true});
@@ -112,28 +114,40 @@ var IdlelifeFM = React.createClass({
 		}
 	},
 	componentDidMount: function() {
-		//TODO: init localStorage data, get audio volume
-		//			set audio, getSongData
-		var fmStore = {},
-				store		= window.localStorage,
+		// init localStorage
+		var fmStore = JSON.parse(window.localStorage.getItem("idlelifefm")),
 				fm = this.refs.fm.getDOMNode();
 				fm.volume = this.state.volume;
-		if(typeof store.idlelifefmVolume === "undefined") {
-			store.idlelifefmVolume = this.state.volume;
-			store.idlelifefmLike = this.state.liked;
-			store.idlelifefmLikedSong = [];
-		} else if(store.idlelifefmVolume) {
+		if(fmStore === null) {
+			fmStore = {};
+			fmStore.volume = this.state.volume;
+			fmStore.liked = this.state.liked;
+			fmStore.likedSong = [];
+			window.localStorage.setItem("idlelifefm", JSON.stringify(fmStore));
+		} else {
 			this.setState({
-				volume: store.idlelifefmVolume,
-				liked: store.idlelifefmLike
+				volume: fmStore.volume,
+				liked: fmStore.liked
 			});
-		}
+		};
+		// Get the first song
+		this.getSongData(this.props.url);
+
 		fm.addEventListener('ended', function() {
-			// loop is on: repeat
+			// loop is on	: repeat
 			// loop is off:
-			//		like is off: request the api for another song;
-			// 		like is on: load from localStorage data
-		}, false);
+			//		like is off	: request the api for another song;
+			// 		like is on	: load from localStorage data
+			if(this.state.loopClicked) {
+				fm.play();
+			} else if(this.state.likeClicked) {
+				// TODO: get the next liked songID from localStorage, request the api for song
+
+			} else {
+				// TODO: change the re
+				this.getSongData(this.props.url2);
+			}
+		}.bind(this), false);
 		fm.addEventListener('timeupdate', function() {
 			if(!isNaN(fm.duration)) {
 				var timeleft = fm.duration - fm.currentTime;
@@ -149,15 +163,41 @@ var IdlelifeFM = React.createClass({
 	},
 	componentDidUpdate: function(prevProps, prevState) {
 		var fm = this.refs.fm.getDOMNode();
+		var fmStore = JSON.parse(window.localStorage.getItem("idlelifefm"));
 		if(prevState.paused !== this.state.paused) {
-			fm.paused ? fm.pause() : fm.play();
+			fm.paused ? fm.play() : fm.pause();
 		};
+		// save the volume change to localStorage
 		if(prevState.volume !== this.state.volume) {
-			window.localStorage.setItem("idlelifefmVolume", this.state.volume);
+			fmStore.volume = this.state.volume;
+			window.localStorage.setItem("idlelifefm", JSON.stringify(fmStore));
 			fm.volume = this.state.volume;
-		}
+		};
+		// add or delete likedSong ID in localStorage
 		if(prevState.liked !== this.state.liked) {
-			window.localStorage.setItem("idlelifefmLike", this.state.liked);
+			fmStore.liked = this.state.liked;
+			if(this.state.heartClicked) {
+				fmStore.likedSong.push(this.state.data.songID);
+				window.localStorage.setItem("idlelifefm",JSON.stringify(fmStore));
+			} else {
+				for(var i=0;i<fmStore.likedSong.length;i++) {
+					if(fmStore.likedSong[i] == this.state.data.songID) {
+						fmStore.likedSong.splice(i,1);
+						window.localStorage.setItem("idlelifefm",JSON.stringify(fmStore));
+						break;
+					}
+				}
+			}
+			window.localStorage.setItem("idlelifefm", JSON.stringify(fmStore));
+		};
+		// check if the current song is in likedSong
+		if(prevState.data.songID !== this.state.data.songID) {
+			for(var i=0;i<fmStore.likedSong.length;i++) {
+				if (fmStore.likedSong[i] == this.state.data.songID) {
+					this.setState({heartClicked: true});
+					break;
+				}
+			}
 		}
 	},
   render: function() {
@@ -168,8 +208,9 @@ var IdlelifeFM = React.createClass({
 	  		<legend>Idlelife FM</legend>
 				<IdlelifeFMAudio  data={this.state.data} ref="fm" />
 				<div className={"fm-ctn"+fmContinueClass} onClick={this.handleItemClick.bind(null,"continue")}>继续播放&gt;</div>
-				<div className={"fm-songlist-p"+fmSonglistClass}>请选择歌单：
-					<div className="fm-songlist-q" onClick={this.handleItemClick.bind(null,"songlist-quit")}>返回</div>
+				<div className={"fm-songlist-p"+fmSonglistClass}>请选择歌单：<div className="clear"></div>
+					<div className="fm-songlist-q"><div className="fm-songlist-count">2</div>全部</div>
+					<div className="fm-songlist-quit" onClick={this.handleItemClick.bind(null,"songlist-quit")}>返回</div>
 					<div className="clear"></div>
 				</div>
 				<div className="paused" onClick={this.handleItemClick.bind(null,"paused")}><svg width='28px' height='26px'><g><rect fill='#9DD6C5' width='28' height='26'/><rect x='7' y='6' fill='#FFFFFF' width='4' height='14'/><rect x='17' y='6' fill='#FFFFFF' width='4' height='14'/></g></svg></div>
@@ -196,8 +237,8 @@ var IdlelifeFMAudio = React.createClass({
 	render: function() {
 		return (
 			<audio className="topic-fm">
-				<source className="fm-ogg" src={this.props.data.ogg} />
-				<source className="fm-mp3" src={this.props.data.mp3} />
+				<source src={this.props.data.ogg} />
+				<source src={this.props.data.mp3} />
 			</audio>
 		);
 	}
@@ -288,7 +329,7 @@ var IdlelifeFMControlPanel = React.createClass({
 
 
 React.render(
-  <IdlelifeFM url="js/FM_songlist_test.js" />,
+  <IdlelifeFM url="js/FM_songlist_test.js" url2="js/FM_songlist_test2.js" />,
   document.getElementById('idlelife-fm')
 );
 
